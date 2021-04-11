@@ -1,124 +1,214 @@
 #include "ll.h"
 
-/**\brief �������� > ��� ���� ll �����
- * ���������� ��������������� ������� ����� �����, ����� �� �����, ����� ������� � ����������� ���������� �� �����������
- * �� ������� �� ������ ������� � ����������
- * ����������� �� ������� - O(n), ��������� ����������� 2
- * ����������� �� ������ - O(1), ��������� ����������� 3
- * \param lval const ll& ����� �����
- * \param rval const ll& ������ �����
- * \return bool true, ���� ����� ������ �������, ����� false
- */
+namespace power {
+	const long long mod = 1000000000;
+}
+using namespace power;
+
+ll::ll() {
+	sign = 0;
+	num = std::vector<long long>{ 0 };
+};
+ll::ll(bool sigN, std::vector<long long> vec) {
+	num = vec;
+	sign = sigN;
+}
+ll ll::operator -() const {
+	return ll(true - sign, num);
+}
+ll ll::abs() const {
+	return ll(0, num);
+}
+
+
+ll operator+(const ll& lval, const ll& rval) {
+	//Создаём объект с пустым вектором, т.к. дефолтный конструктор создаёт объект с вектором, в котором уже содержится 0
+	ll result(0, std::vector<long long>{});
+	long long minsize = lval.num.size() < rval.num.size() ? lval.num.size() : rval.num.size();//Тернарные операторы, т.к. 
+	long long maxsize = lval.num.size() < rval.num.size() ? rval.num.size() : lval.num.size();//у меня чому-то не работает  min и max. Потом заменю
+/*
+*В сложении мы идём сначала циклом по минимальной длине вектора, складывая соответствующие их эл-ты. После сложения мы добавляем первые 9 цифр этой суммы
+*в элемент результирующего вектора, а затем эту сумму мы делим на миллиард. Это сделано с целью отслеживания переполнения, т.е. если бы мы вышли за предел в
+*9 цифр, то это деление дало бы единицу, а если не вышли, то 0.
+*/
+	if (lval.sign == rval.sign) {
+		long long sum = 0;
+		for (int i = 0; i < minsize; i++) {
+			sum += lval.num[i] + rval.num[i];
+			result.num.push_back(sum % mod);
+			sum /= mod;
+		}
+		//Добавление оставшихся разрядов, которые не были задействованы в сложении, если размерности векторов не совпадают
+		if (lval.num.size() > rval.num.size()) {
+			for (int i = minsize; i < maxsize; i++) {
+				sum += lval.num[i];
+				result.num.push_back(sum % mod);
+				sum /= mod;
+			}
+		}
+		else if (lval.num.size() < rval.num.size()) {
+			for (int i = minsize; i < maxsize; i++) {
+				sum += rval.num[i];
+				result.num.push_back(sum % mod);
+				sum /= mod;
+			}
+		}
+		//Если после всего осталась единица, то добавляем её в следющий разряд
+		if (sum) result.num.push_back(1);
+		result.sign = lval.sign;
+	}
+	/*
+	*Если знаки операндов разные, то происходит вычитание. Общий прицнип схож со сложением, т.е. так же сначала вычитаем по минимальной
+	*длине вектора, а затем добавляем оставшиеся эл-ты бОльшего вектора, если таковой имеется, и занимаем из старших разрядом. Асимптотика та же.
+	*/
+	else {
+		long long sub = 0;
+
+		//Выбираем число из которого будем вычитать
+		if (lval == -rval) {
+			result = ll();
+		}
+		else if (lval.abs() >= rval.abs())
+			for (int i = 0; i < minsize; i++) {
+				sub = mod * (lval.num[i] < rval.num[i]) + lval.num[i] - rval.num[i] - sub;
+				result.num.push_back(sub);
+				sub = (lval.num[i] < rval.num[i]) ? 1 : 0;
+			}
+		else {
+			for (int i = 0; i < minsize; i++) {
+				sub = mod * (rval.num[i] < lval.num[i]) + rval.num[i] - lval.num[i] - sub;
+				result.num.push_back(sub);
+				sub = (rval.num[i] < lval.num[i]) ? 1 : 0;
+			}
+			//Добавляем оставшиеся разряды и, если нужно, занимаем единицу из старших разрядов
+		}
+		if (lval.abs() >= rval.abs()) {
+			for (int i = minsize; i < maxsize; i++) {
+				sub = mod * (lval.num[i] < sub) + lval.num[i] - sub;
+				if (sub > lval.num[i]) sub = 1;
+				result.num.push_back(sub);
+			}
+		}
+		else {
+			for (int i = minsize; i < maxsize; i++) {
+				sub = mod * (rval.num[i] < sub) + rval.num[i] - sub;
+				if (sub > rval.num[i]) sub = 1;
+				result.num.push_back(sub);
+			}
+		}
+		//Удаляем незначащий ноль с конца
+		if (result.num.size() > 1 && result.num[result.num.size() - 1] == 0) result.num.pop_back();
+		result.sign = lval.abs() >= rval.abs() ? lval.sign : rval.sign;
+	}
+	return result;
+}
+ll operator -(const ll& lval, const ll& rval)
+{
+	ll result;
+	result = lval + (-rval);
+	return result;
+};
+
 bool operator >(const ll& lval, const ll& rval)
-{   if (lval.sign!=rval.sign)
-        return lval.sign<rval.sign;
-    auto lsize=lval.num.size();
-    auto rsize=rval.num.size();
-    if (lsize!=rsize)
-        return ((lsize>rsize)^lval.sign);
-    for (int i=0; i<lsize; i++)
-        if (lval.num[i]!=rval.num[i])
-            return (lval.num[i]>rval.num[i])^lval.sign;
-    return 0;
+{
+	if (lval.sign != rval.sign)
+		return lval.sign < rval.sign;
+	auto lsize = lval.num.size();
+	auto rsize = rval.num.size();
+	if (lsize != rsize)
+		return ((lsize > rsize) ^ lval.sign);
+	for (int i = lsize - 1; i > 0; i--)
+		if (lval.num[i] != rval.num[i])
+			return (lval.num[i] > rval.num[i]) ^ lval.sign;
+	return 0;
 }
-/**\brief �������� < ��� ���� ll �����
- * ���������� ��������������� ������� ����� �����, ����� �� �����, ����� ������� � ����������� ���������� �� �����������
- * ������� �� ���������� > � !=
- * ����������� �� ������� - O(n), ��������� ����������� 2
- * ����������� �� ������ - O(1), ��������� ����������� 3
- * \param lval const ll& ����� �����
- * \param rval const ll& ������ �����
- * \return bool true, ���� ����� ������ �������, ����� false
- */
-bool operator < (const ll& lval, const ll& rval)
-{   
-    return (!(lval>rval) && lval!=rval);
+bool operator < (const ll& lval, const ll& rval) {
+	bool result = false;
+	if (rval > lval) result = true;
+	return result;
+}
+bool operator ==(const ll& lval, const ll& rval) {
+	bool result = false;
+	if (!(lval < rval) && !(lval > rval)) result = true;
+	return result;
+}
+bool operator !=(const ll& lval, const ll& rval) {
+	bool result = false;
+	if (!(lval == rval)) result = true;
+	return result;
+}
+bool operator >=(const ll& lval, const ll& rval) {
+	bool result = false;
+	if (lval > rval || lval == rval) result = true;
+	return result;
+}
+bool operator <=(const ll& lval, const ll& rval) {
+	bool result = false;
+	if (lval < rval || lval == rval) result = true;
+	return result;
 }
 
-std::ostream& operator<< (std::ostream& out, const ll& val)
-{
-    bool k = false;
-    if (val.sign == 1) out << '-';
-    for (int i = val.num.size() - 1; i >= 0; i--)
-    {
-        if (val.num[i] != 0 || k)
-        {
-            int h = 0;
-            for (long long x = val.num[i]; x > 0; x /= 10, h++);
-            if (k) for (int i = 0; i < 9 - h; i++) out << '0';
-            if (val.num[i] != 0) out << val.num[i];
-        }
-        if (val.num[i] != 0) k = true;
-    }
-    return out;
-}
+int main() {
+	std::vector<long long> a = { 1 };
+	std::vector<long long> b = { 0, 0, 1 };
+	std::vector<long long> c = { 999999999, 999999999, 999999999, 999999999, 1 };
+	std::vector<long long> d = { 999999999, 999999991, 000000000, 999999998, 1 };
+	std::vector<long long> e = { 0 };
+	std::vector<long long> b1 = { 999999999, 123456789, 123456789 };
+	std::vector<long long> c1 = { 0, 999999999, 0, 999999999, 1 };
 
-void fft(std::vector<std::complex<long double>>& to, bool invert)
-{
-    int n = to.size();
-    if (n == 1) return;
-    std::vector<std::complex<long double>> a0(n / 2), a1(n / 2);
-    for (int i = 0; i < n; i += 2)
-    {
-        a0[i / 2] = to[i];
-        a1[i / 2] = to[i + 1];
-    }
-    fft(a0, invert);
-    fft(a1, invert);
-    long double fi = 2 * power::PI / n * (invert == 1 ? -1 : 1);
-    std::complex<long double> p(1), key(cos(fi), sin(fi));
-    for (int i = 0; i < n / 2; i++)
-    {
-        to[i] = a0[i] + p * a1[i];
-        to[i + n / 2] = a0[i] - p * a1[i];
-        if (invert == 1)
-        {
-            to[i] /= 2;
-            to[i + n / 2] /= 2;
-        }
-        p *= key;
-    }
-}
+	ll t(false, a);
+	ll t2(false, b);
+	ll t3(false, c);
+	ll t4(false, d);
+	ll t5(false, e);
+	ll t6(false, b1);
+	ll t7(false, c1);
 
-ll operator *(const ll& lval, const ll& rval)
-{
-    std::vector<long long> l_val, r_val;
-    for (int i = 0; i < std::max(lval.num.size(), rval.num.size()); i++)
-    {
-        if(i < static_cast<int>(lval.num.size()))
-        {
-            l_val.push_back(lval.num[i] % 1000);
-            l_val.push_back(lval.num[i] / 1000 % 1000);
-            l_val.push_back(lval.num[i] / 1000000);
-        }
-        if (i < static_cast<int>(rval.num.size()))
-        {
-            r_val.push_back(rval.num[i] % 1000);
-            r_val.push_back(rval.num[i] / 1000 % 1000);
-            r_val.push_back(rval.num[i] / 1000000);
-        }
-    }
-    int n = 1;
-    for (; n <= static_cast<int>(std::max(l_val.size(), r_val.size())); n <<= 1);
-    n <<= 1;
-    l_val.resize(n);
-    r_val.resize(n);
-    std::vector< std::complex<long double> > flval(l_val.begin(), l_val.end()), frval(r_val.begin(), r_val.end());
-    fft(flval, false);
-    fft(frval, false);
-    for (int i = 0; i < n; i++) flval[i] *= frval[i];
-    fft(flval, true);
-    std::vector<long long> ans(n), ansy;
-    for (int i = 0; i < n; i++) ans[i] = static_cast<long long>(flval[i].real() + 0.5);
-    for (int i = 0; i < n - 1; i++)
-    {
-        ans[i + 1] += ans[i] / 1000;
-        ans[i] %= 1000;
-    }
-    for (int i = 0; i < n; i++)
-    {
-        if (i % 3 == 0) ansy.push_back(ans[i]);
-        else ansy[i / 3] += pow(1000, i % 3) * ans[i];
-    }
-    return ll(lval.sign^rval.sign, ansy);
-}
+	// Тесты//
+
+	ll test = t3 + t4;
+	for (int i = 0; i < test.getVec().size(); i++) std::cout << test.getVec()[i] << " ";
+	std::cout << std::endl << "sign is " << test.getSign() << "\n";
+	std::cout << "999999998 999999991 0 999999998 3 Expected\n Sign is 0" << "\n";
+	ll test2 = t4 + t5;
+	for (int i = 0; i < test2.getVec().size(); i++) std::cout << test2.getVec()[i] << " ";
+	std::cout << std::endl << "sign is " << test2.getSign() << "\n";
+	std::cout << "999999999 999999991 0 999999998 1 Expected\n Sign is 0" << "\n";
+	ll test3 = t5 - t2;
+	for (int i = 0; i < test3.getVec().size(); i++) std::cout << test3.getVec()[i] << " ";
+	std::cout << std::endl << "sign is " << test3.getSign() << "\n";
+	std::cout << "0 0 1 Expected\n Sign is 1" << "\n";
+	ll test4 = t2 - t5;
+	for (int i = 0; i < test4.getVec().size(); i++) std::cout << test4.getVec()[i] << " ";
+	std::cout << std::endl << "sign is " << test4.getSign() << "\n";
+	std::cout << "0 0 1 Expected\n Sign is 0" << "\n";
+	ll test5 = -t4 - (-t3);
+	for (int i = 0; i < test5.getVec().size(); i++) std::cout << test5.getVec()[i] << " ";
+	std::cout << std::endl << "sign is " << test5.getSign() << "\n";
+	std::cout << "0 8 999999999 1 Expected\n Sign is 0" << "\n";
+	ll test6 = t7 - t6;
+	for (int i = 0; i < test6.getVec().size(); i++) std::cout << test6.getVec()[i] << " ";
+	std::cout << std::endl << "sign is " << test6.getSign() << "\n";
+	std::cout << "1 876543209 876543211 999999998 1 Expected\n Sign is 0" << "\n";
+	ll test0 = t7 - t7;
+	for (int i = 0; i < test0.getVec().size(); i++) std::cout << test0.getVec()[i] << " ";
+	std::cout << "sign is " << test0.getSign() << "\n";
+	std::cout << "0 Expected\n Sign is 0\n";
+	ll test7 = ll(false, std::vector<long long>{0, 0, 0, 0, 0, 0, 0, 101010101, 1}) - ll(false, std::vector<long long>{0, 0, 0, 0, 0, 0, 101010101, 0, 1});
+	for (int i = 0; i < test7.getVec().size(); i++) std::cout << test7.getVec()[i] << " ";
+	std::cout << "sign is " << test7.getSign() << "\n";
+	std::cout << "0 0 0 0 0 0 898989899  101010100 Expected\n Sign is 0" << "\n";
+	ll test8 = ll(false, std::vector<long long>{500000000}) + ll(false, std::vector<long long>{500000000});
+	for (int i = 0; i < test8.getVec().size(); i++) std::cout << test8.getVec()[i] << " ";
+	std::cout << "sign is " << test8.getSign() << "\n";
+	std::cout << "0 1 Expected\n Sign is 0" << "\n";
+	ll test9 = ll(false, std::vector<long long>{0}) + ll(false, std::vector<long long>{0});
+	for (int i = 0; i < test9.getVec().size(); i++) std::cout << test9.getVec()[i] << " ";
+	std::cout << "sign is " << test9.getSign() << "\n";
+	std::cout << "0 Expected\n Sign is 0" << "\n";
+	ll test10 = ll(false, std::vector<long long>{0, 3}) - ll(false, std::vector<long long>{1});
+	for (int i = 0; i < test10.getVec().size(); i++) std::cout << test10.getVec()[i] << " ";
+	std::cout << "sign is " << test10.getSign() << "\n";
+	std::cout << "999999999 2 Expected\n Sign is 0" << "\n";
+};
