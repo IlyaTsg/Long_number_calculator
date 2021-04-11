@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include ll.h
+#include "ll.h"
 class vln
 {
 private:
@@ -11,6 +11,7 @@ public:
     vln(int to);
     vln(long long to);
     vln(std::string to);
+    vln(std::vector<long long> nuM);
     friend bool operator ==(const vln &lval, const vln &rval);
     template <typename T>
     friend bool operator ==(const vln& lval, const T&  rval);

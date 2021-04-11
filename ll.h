@@ -5,14 +5,15 @@
 class ll
 {
 private:
-    std::vector<long long> num;  //Вектор цифр
-    bool sign;              //0 - плюс, 1 - минус
+    std::vector<long long> num;  //пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+    bool sign;              //0 - пїЅпїЅпїЅпїЅ, 1 - пїЅпїЅпїЅпїЅпїЅ
 
 public:
     ll();
     ll(int to);
     ll(long long to);
     ll(std::string to);
+    ll(bool sigN, std::vector<long long> nuM);
     ll operator -();
     friend bool operator ==(const ll &lval, const ll &rval);
     friend bool operator < (const ll& lval, const ll& rval);
@@ -39,6 +40,6 @@ public:
     ll rsign();             //Z-3
     ll gcd(ll to);          //N-13
 
-    ll fact();              //Факториал
-    //Прочие задачи для целых чисел
+    ll fact();              //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    //пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 };
