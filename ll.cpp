@@ -109,44 +109,6 @@ ll operator -(const ll& lval, const ll& rval)
 	return result;
 };
 
-bool operator >(const ll& lval, const ll& rval)
-{
-	if (lval.sign != rval.sign)
-		return lval.sign < rval.sign;
-	auto lsize = lval.num.size();
-	auto rsize = rval.num.size();
-	if (lsize != rsize)
-		return ((lsize > rsize) ^ lval.sign);
-	for (int i = lsize - 1; i > 0; i--)
-		if (lval.num[i] != rval.num[i])
-			return (lval.num[i] > rval.num[i]) ^ lval.sign;
-	return 0;
-}
-bool operator < (const ll& lval, const ll& rval) {
-	bool result = false;
-	if (rval > lval) result = true;
-	return result;
-}
-bool operator ==(const ll& lval, const ll& rval) {
-	bool result = false;
-	if (!(lval < rval) && !(lval > rval)) result = true;
-	return result;
-}
-bool operator !=(const ll& lval, const ll& rval) {
-	bool result = false;
-	if (!(lval == rval)) result = true;
-	return result;
-}
-bool operator >=(const ll& lval, const ll& rval) {
-	bool result = false;
-	if (lval > rval || lval == rval) result = true;
-	return result;
-}
-bool operator <=(const ll& lval, const ll& rval) {
-	bool result = false;
-	if (lval < rval || lval == rval) result = true;
-	return result;
-}
 
 int main() {
 	std::vector<long long> a = { 1 };
