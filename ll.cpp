@@ -1,13 +1,13 @@
 #include "ll.h"
 
-/**\brief оператор > для двух ll чисел
- * Сравнивает последовательно сначала знаки чисел, потом их длину, потом начиная с наибольшего сравнивает их посимвольно
- * Не зависит от других функций и операторов
- * Асимптотика по времени - O(n), константа асимптотики 2
- * Асимптотика по памяти - O(1), константа асимптотики 2
- * \param lval const ll& левое число
- * \param rval const ll& правое число
- * \return bool true, если левое больше правого, иначе false
+/**\brief Г®ГЇГҐГ°Г ГІГ®Г° > Г¤Г«Гї Г¤ГўГіГµ ll Г·ГЁГ±ГҐГ«
+ * Г‘Г°Г ГўГ­ГЁГўГ ГҐГІ ГЇГ®Г±Г«ГҐГ¤Г®ГўГ ГІГҐГ«ГјГ­Г® Г±Г­Г Г·Г Г«Г  Г§Г­Г ГЄГЁ Г·ГЁГ±ГҐГ«, ГЇГ®ГІГ®Г¬ ГЁГµ Г¤Г«ГЁГ­Гі, ГЇГ®ГІГ®Г¬ Г­Г Г·ГЁГ­Г Гї Г± Г­Г ГЁГЎГ®Г«ГјГёГҐГЈГ® Г±Г°Г ГўГ­ГЁГўГ ГҐГІ ГЁГµ ГЇГ®Г±ГЁГ¬ГўГ®Г«ГјГ­Г®
+ * ГЌГҐ Г§Г ГўГЁГ±ГЁГІ Г®ГІ Г¤Г°ГіГЈГЁГµ ГґГіГ­ГЄГ¶ГЁГ© ГЁ Г®ГЇГҐГ°Г ГІГ®Г°Г®Гў
+ * ГЂГ±ГЁГ¬ГЇГІГ®ГІГЁГЄГ  ГЇГ® ГўГ°ГҐГ¬ГҐГ­ГЁ - O(n), ГЄГ®Г­Г±ГІГ Г­ГІГ  Г Г±ГЁГ¬ГЇГІГ®ГІГЁГЄГЁ 2
+ * ГЂГ±ГЁГ¬ГЇГІГ®ГІГЁГЄГ  ГЇГ® ГЇГ Г¬ГїГІГЁ - O(1), ГЄГ®Г­Г±ГІГ Г­ГІГ  Г Г±ГЁГ¬ГЇГІГ®ГІГЁГЄГЁ 2
+ * \param lval const ll& Г«ГҐГўГ®ГҐ Г·ГЁГ±Г«Г®
+ * \param rval const ll& ГЇГ°Г ГўГ®ГҐ Г·ГЁГ±Г«Г®
+ * \return bool true, ГҐГ±Г«ГЁ Г«ГҐГўГ®ГҐ ГЎГ®Г«ГјГёГҐ ГЇГ°Г ГўГ®ГЈГ®, ГЁГ­Г Г·ГҐ false
  */
 bool operator >(const ll& lval, const ll& rval)
 {   if (lval.sign!=rval.sign)
@@ -20,14 +20,14 @@ bool operator >(const ll& lval, const ll& rval)
             return (lval.num[i]>rval.num[i])^lval.sign;
     return 0;
 }
-/**\brief оператор < для двух ll чисел
- * Сравнивает последовательно сначала знаки чисел, потом их длину, потом начиная с наибольшего сравнивает их посимвольно
- * Зависит от операторов > и !=
- * Асимптотика по времени - O(n), константа асимптотики 2
- * Асимптотика по памяти - O(1), константа асимптотики 2
- * \param lval const ll& левое число
- * \param rval const ll& правое число
- * \return bool true, если левое меньше правого, иначе false
+/**\brief Г®ГЇГҐГ°Г ГІГ®Г° < Г¤Г«Гї Г¤ГўГіГµ ll Г·ГЁГ±ГҐГ«
+ * Г‘Г°Г ГўГ­ГЁГўГ ГҐГІ ГЇГ®Г±Г«ГҐГ¤Г®ГўГ ГІГҐГ«ГјГ­Г® Г±Г­Г Г·Г Г«Г  Г§Г­Г ГЄГЁ Г·ГЁГ±ГҐГ«, ГЇГ®ГІГ®Г¬ ГЁГµ Г¤Г«ГЁГ­Гі, ГЇГ®ГІГ®Г¬ Г­Г Г·ГЁГ­Г Гї Г± Г­Г ГЁГЎГ®Г«ГјГёГҐГЈГ® Г±Г°Г ГўГ­ГЁГўГ ГҐГІ ГЁГµ ГЇГ®Г±ГЁГ¬ГўГ®Г«ГјГ­Г®
+ * Г‡Г ГўГЁГ±ГЁГІ Г®ГІ Г®ГЇГҐГ°Г ГІГ®Г°Г®Гў > ГЁ !=
+ * ГЂГ±ГЁГ¬ГЇГІГ®ГІГЁГЄГ  ГЇГ® ГўГ°ГҐГ¬ГҐГ­ГЁ - O(n), ГЄГ®Г­Г±ГІГ Г­ГІГ  Г Г±ГЁГ¬ГЇГІГ®ГІГЁГЄГЁ 2
+ * ГЂГ±ГЁГ¬ГЇГІГ®ГІГЁГЄГ  ГЇГ® ГЇГ Г¬ГїГІГЁ - O(1), ГЄГ®Г­Г±ГІГ Г­ГІГ  Г Г±ГЁГ¬ГЇГІГ®ГІГЁГЄГЁ 2
+ * \param lval const ll& Г«ГҐГўГ®ГҐ Г·ГЁГ±Г«Г®
+ * \param rval const ll& ГЇГ°Г ГўГ®ГҐ Г·ГЁГ±Г«Г®
+ * \return bool true, ГҐГ±Г«ГЁ Г«ГҐГўГ®ГҐ Г¬ГҐГ­ГјГёГҐ ГЇГ°Г ГўГ®ГЈГ®, ГЁГ­Г Г·ГҐ false
  */
  bool operator < (const ll& lval, const ll& rval)
 {   return rval>lval;
@@ -35,34 +35,30 @@ bool operator >(const ll& lval, const ll& rval)
 
 template<typename T>
 bool operator >(const T& lval, const ll& rval)
-{   ll lv(lval);
-    return lv>rval;
+{   return ll(lval)>rval;
 }
 
 template<typename T>
 bool operator >(const ll& lval, const ll& rval)
-{   ll rv(rval);
-    return lval>rv;
+{   return lval>ll(rval);
 }
 
 template<typename T>
 bool operator <(const T& lval, const ll& rval)
-{   ll lv(lval);
-    return lv<rval;
+{   return ll(lval)<rval;
 }
 
 template<typename T>
 bool operator <(const ll& lval, const T& rval)
-{   ll rv(rval);
-    return lval<rv;
+{   return lval<ll(rval);
 }
 
 bool operator ==(const ll &lval, const ll &rval){
     if (lval.sign != rval.sign)
-        return false;// не равны
+        return false;// Г­ГҐ Г°Г ГўГ­Г»
     else{
         unsigned int len1 = lval.num.size();
-        if (len1 != rval.num.size()) return false; // не равны
+        if (len1 != rval.num.size()) return false; // Г­ГҐ Г°Г ГўГ­Г»
         else{
             for (unsigned int i = len1-1; i>-1; i--)
                 if (lval.num[i] != rval.num[i])
@@ -76,23 +72,23 @@ bool operator !=(const ll& lval, const ll& rval){
     return !(lval == rval);
 }
 
-template<typename T> //объявление параметра шаблона функции
-T operator >= (const T& lval, const ll& rval)
+template<typename T> //Г®ГЎГєГїГўГ«ГҐГ­ГЁГҐ ГЇГ Г°Г Г¬ГҐГІГ°Г  ГёГ ГЎГ«Г®Г­Г  ГґГіГ­ГЄГ¶ГЁГЁ
+bool operator >= (const T& lval, const ll& rval)
 {   return !(lval>rval);
 }
 
 template<typename T>
-T operator >= (const T& lval, const ll& rval)
+bool operator >= (const T& lval, const ll& rval)
 {   return !(lval<rval);
 }
 
 template<typename T>
-T operator <= (const T& lval, const ll& rval)
+bool operator <= (const T& lval, const ll& rval)
 {   return !(lval>rval);
 }
 
 template<typename T>
-T operator <= (const T& lval, const ll& rval)
+bool operator <= (const T& lval, const ll& rval)
 {   return !(lval>rval);
 }
 
