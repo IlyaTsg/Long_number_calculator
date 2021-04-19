@@ -22,6 +22,13 @@ public:
     ll(int to) :num{ to % power::mod, to / power::mod % power::mod }, sign(to < 0){}
     ll(long long to);
     ll(std::string to);
+    ll(bool sigN, std::vector<long long> nuM);
+    std::vector<long long> getVec(){
+        return num;
+    };
+    bool getSign(){
+        return sign;
+    };
     ll operator -();
     friend bool operator ==(const ll& lval, const ll& rval);
     friend bool operator < (const ll& lval, const ll& rval);
