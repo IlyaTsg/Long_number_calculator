@@ -1,7 +1,7 @@
 #include "ll.h"
 
 ll ll::operator -() const {
-	return ll(true - sign, num);
+	return ll((!(num.size() == 1 && num[0] == 0) - sign), num);
 }
 ll ll::abs() const {
 	return ll(0, num);
@@ -9,14 +9,13 @@ ll ll::abs() const {
 
 
 ll operator+(const ll& lval, const ll& rval) {
-	//Создаём объект с пустым вектором, т.к. дефолтный конструктор создаёт объект с вектором, в котором уже содержится 0
+// Creating ll instance with empty vector, because default constructor creates vector with 0 element within
 	ll result(0, std::vector<long long>{});
-	long long minsize = lval.num.size() < rval.num.size() ? lval.num.size() : rval.num.size();//Тернарные операторы, т.к. 
-	long long maxsize = lval.num.size() < rval.num.size() ? rval.num.size() : lval.num.size();//у меня чому-то не работает  min и max. Потом заменю
+	long long minsize = min(lval.num.size(), rval.num.size())
+	long long maxsize = max(lval.num.size(), rval.num.size())
 /*
-*В сложении мы идём сначала циклом по минимальной длине вектора, складывая соответствующие их эл-ты. После сложения мы добавляем первые 9 цифр этой суммы
-*в элемент результирующего вектора, а затем эту сумму мы делим на миллиард. Это сделано с целью отслеживания переполнения, т.е. если бы мы вышли за предел в
-*9 цифр, то это деление дало бы единицу, а если не вышли, то 0.
+* After addition of two elements programm adds first 9 elements to resultant vector and divides sum by 10^9 for sake of overflow tracing,
+*because if overflow happens this division's result would be 1, which we will add to next element, otherwise this division's result would be 0
 */
 	if (lval.sign == rval.sign) {
 		long long sum = 0;
@@ -25,7 +24,7 @@ ll operator+(const ll& lval, const ll& rval) {
 			result.num.push_back(sum % mod);
 			sum /= mod;
 		}
-		//Добавление оставшихся разрядов, которые не были задействованы в сложении, если размерности векторов не совпадают
+//Addition of remainding larger vector's elemenets, which weren't involved in addition.
 		if (lval.num.size() > rval.num.size()) {
 			for (int i = minsize; i < maxsize; i++) {
 				sum += lval.num[i];
@@ -40,18 +39,14 @@ ll operator+(const ll& lval, const ll& rval) {
 				sum /= mod;
 			}
 		}
-		//Если после всего осталась единица, то добавляем её в следющий разряд
+//If after all those calculations programm got left 1, programm adds this 1 to next new rank
 		if (sum) result.num.push_back(1);
 		result.sign = lval.sign;
 	}
-	/*
-	*Если знаки операндов разные, то происходит вычитание. Общий прицнип схож со сложением, т.е. так же сначала вычитаем по минимальной
-	*длине вектора, а затем добавляем оставшиеся эл-ты бОльшего вектора, если таковой имеется, и занимаем из старших разрядом. Асимптотика та же.
-	*/
+//If the signs of operands don't match, programm calculate substraction.
 	else {
 		long long sub = 0;
-
-		//Выбираем число из которого будем вычитать
+//Choosing from which ll instance we substract another one
 		if (lval == -rval) {
 			result = ll();
 		}
@@ -59,15 +54,17 @@ ll operator+(const ll& lval, const ll& rval) {
 			for (int i = 0; i < minsize; i++) {
 				sub = mod * (lval.num[i] < rval.num[i]) + lval.num[i] - rval.num[i] - sub;
 				result.num.push_back(sub);
+//Check for borrowing 1 from higher rank
 				sub = (lval.num[i] < rval.num[i]) ? 1 : 0;
 			}
 		else {
 			for (int i = 0; i < minsize; i++) {
 				sub = mod * (rval.num[i] < lval.num[i]) + rval.num[i] - lval.num[i] - sub;
 				result.num.push_back(sub);
+//Check for borrowing 1 from higher rank
 				sub = (rval.num[i] < lval.num[i]) ? 1 : 0;
 			}
-			//Добавляем оставшиеся разряды и, если нужно, занимаем единицу из старших разрядов
+//Addition of remainding larger vector's elemenets, which weren't involved in addition, and if necessary we borrow 1 form higher ranks
 		}
 		if (lval.abs() >= rval.abs()) {
 			for (int i = minsize; i < maxsize; i++) {
@@ -83,7 +80,7 @@ ll operator+(const ll& lval, const ll& rval) {
 				result.num.push_back(sub);
 			}
 		}
-		//Удаляем незначащий ноль с конца
+//Deleting insignificant 0 from end of vector
 		if (result.num.size() > 1 && result.num[result.num.size() - 1] == 0) result.num.pop_back();
 		result.sign = lval.abs() >= rval.abs() ? lval.sign : rval.sign;
 	}
