@@ -1,18 +1,5 @@
 #include "ll.h"
 
-namespace power {
-	const long long mod = 1000000000;
-}
-using namespace power;
-
-ll::ll() {
-	sign = 0;
-	num = std::vector<long long>{ 0 };
-};
-ll::ll(bool sigN, std::vector<long long> vec) {
-	num = vec;
-	sign = sigN;
-}
 ll ll::operator -() const {
 	return ll(true - sign, num);
 }
@@ -109,68 +96,3 @@ ll operator -(const ll& lval, const ll& rval)
 	return result;
 };
 
-
-int main() {
-	std::vector<long long> a = { 1 };
-	std::vector<long long> b = { 0, 0, 1 };
-	std::vector<long long> c = { 999999999, 999999999, 999999999, 999999999, 1 };
-	std::vector<long long> d = { 999999999, 999999991, 000000000, 999999998, 1 };
-	std::vector<long long> e = { 0 };
-	std::vector<long long> b1 = { 999999999, 123456789, 123456789 };
-	std::vector<long long> c1 = { 0, 999999999, 0, 999999999, 1 };
-
-	ll t(false, a);
-	ll t2(false, b);
-	ll t3(false, c);
-	ll t4(false, d);
-	ll t5(false, e);
-	ll t6(false, b1);
-	ll t7(false, c1);
-
-	// Тесты//
-
-	ll test = t3 + t4;
-	for (int i = 0; i < test.getVec().size(); i++) std::cout << test.getVec()[i] << " ";
-	std::cout << std::endl << "sign is " << test.getSign() << "\n";
-	std::cout << "999999998 999999991 0 999999998 3 Expected\n Sign is 0" << "\n";
-	ll test2 = t4 + t5;
-	for (int i = 0; i < test2.getVec().size(); i++) std::cout << test2.getVec()[i] << " ";
-	std::cout << std::endl << "sign is " << test2.getSign() << "\n";
-	std::cout << "999999999 999999991 0 999999998 1 Expected\n Sign is 0" << "\n";
-	ll test3 = t5 - t2;
-	for (int i = 0; i < test3.getVec().size(); i++) std::cout << test3.getVec()[i] << " ";
-	std::cout << std::endl << "sign is " << test3.getSign() << "\n";
-	std::cout << "0 0 1 Expected\n Sign is 1" << "\n";
-	ll test4 = t2 - t5;
-	for (int i = 0; i < test4.getVec().size(); i++) std::cout << test4.getVec()[i] << " ";
-	std::cout << std::endl << "sign is " << test4.getSign() << "\n";
-	std::cout << "0 0 1 Expected\n Sign is 0" << "\n";
-	ll test5 = -t4 - (-t3);
-	for (int i = 0; i < test5.getVec().size(); i++) std::cout << test5.getVec()[i] << " ";
-	std::cout << std::endl << "sign is " << test5.getSign() << "\n";
-	std::cout << "0 8 999999999 1 Expected\n Sign is 0" << "\n";
-	ll test6 = t7 - t6;
-	for (int i = 0; i < test6.getVec().size(); i++) std::cout << test6.getVec()[i] << " ";
-	std::cout << std::endl << "sign is " << test6.getSign() << "\n";
-	std::cout << "1 876543209 876543211 999999998 1 Expected\n Sign is 0" << "\n";
-	ll test0 = t7 - t7;
-	for (int i = 0; i < test0.getVec().size(); i++) std::cout << test0.getVec()[i] << " ";
-	std::cout << "sign is " << test0.getSign() << "\n";
-	std::cout << "0 Expected\n Sign is 0\n";
-	ll test7 = ll(false, std::vector<long long>{0, 0, 0, 0, 0, 0, 0, 101010101, 1}) - ll(false, std::vector<long long>{0, 0, 0, 0, 0, 0, 101010101, 0, 1});
-	for (int i = 0; i < test7.getVec().size(); i++) std::cout << test7.getVec()[i] << " ";
-	std::cout << "sign is " << test7.getSign() << "\n";
-	std::cout << "0 0 0 0 0 0 898989899  101010100 Expected\n Sign is 0" << "\n";
-	ll test8 = ll(false, std::vector<long long>{500000000}) + ll(false, std::vector<long long>{500000000});
-	for (int i = 0; i < test8.getVec().size(); i++) std::cout << test8.getVec()[i] << " ";
-	std::cout << "sign is " << test8.getSign() << "\n";
-	std::cout << "0 1 Expected\n Sign is 0" << "\n";
-	ll test9 = ll(false, std::vector<long long>{0}) + ll(false, std::vector<long long>{0});
-	for (int i = 0; i < test9.getVec().size(); i++) std::cout << test9.getVec()[i] << " ";
-	std::cout << "sign is " << test9.getSign() << "\n";
-	std::cout << "0 Expected\n Sign is 0" << "\n";
-	ll test10 = ll(false, std::vector<long long>{0, 3}) - ll(false, std::vector<long long>{1});
-	for (int i = 0; i < test10.getVec().size(); i++) std::cout << test10.getVec()[i] << " ";
-	std::cout << "sign is " << test10.getSign() << "\n";
-	std::cout << "999999999 2 Expected\n Sign is 0" << "\n";
-};
