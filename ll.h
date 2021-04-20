@@ -29,7 +29,7 @@ public:
     bool getSign(){
         return sign;
     };
-    ll operator -();
+    ll operator -() const;
     friend bool operator ==(const ll &lval, const ll &rval);
     friend bool operator < (const ll& lval, const ll& rval);
     template <typename T>
@@ -51,7 +51,7 @@ public:
     friend ll operator /(const ll& lval, const ll& rval);       //Z-9
     friend std::ostream& operator<< (std::ostream& out, const ll& val);
 
-    ll abs();               //Z-1
+    ll abs() const;               //Z-1
     short poz();            //Z-2
     ll rsign();             //Z-3
     ll gcd(ll to);          //N-13
