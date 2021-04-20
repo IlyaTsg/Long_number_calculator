@@ -22,11 +22,26 @@ public:
     ll(int to) :num{ to % power::mod, to / power::mod % power::mod }, sign(to < 0){}
     ll(long long to);
     ll(std::string to);
+    ll(bool sigN, std::vector<long long> nuM);
+    std::vector<long long> getVec(){
+        return num;
+    };
+    bool getSign(){
+        return sign;
+    };
     ll operator -() const;
-    friend bool operator ==(const ll& lval, const ll& rval);
+    friend bool operator ==(const ll &lval, const ll &rval);
     friend bool operator < (const ll& lval, const ll& rval);
-    friend bool operator !=(const ll& lval, const ll& rval);
+    template <typename T>
+    friend bool operator < (const ll& lval, const T&  rval);
+    template <typename T>
+    friend bool operator < (const T&  lval, const ll& rval);
     friend bool operator > (const ll& lval, const ll& rval);
+    template <typename T>
+    friend bool operator > (const ll& lval, const T&  rval);
+    template <typename T>
+    friend bool operator > (const T&  lval, const ll& rval);
+    friend bool operator !=(const ll& lval, const ll& rval);
     friend bool operator >=(const ll& lval, const ll& rval);
     friend bool operator <=(const ll& lval, const ll& rval);
     friend ll operator +(const ll& lval, const ll& rval);       //Z-6
