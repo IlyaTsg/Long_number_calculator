@@ -11,8 +11,8 @@ ll ll::abs() const {
 ll operator+(const ll& lval, const ll& rval) {
 // Creating ll instance with empty vector, because default constructor creates vector with 0 element within
 	ll result(0, std::vector<long long>{});
-	long long minsize = min(lval.num.size(), rval.num.size())
-	long long maxsize = max(lval.num.size(), rval.num.size())
+	long long minsize = std::min(lval.num.size(), rval.num.size());
+	long long maxsize = std::max(lval.num.size(), rval.num.size());
 /*
 * After addition of two elements programm adds first 9 elements to resultant vector and divides sum by 10^9 for sake of overflow tracing,
 *because if overflow happens this division's result would be 1, which we will add to next element, otherwise this division's result would be 0
