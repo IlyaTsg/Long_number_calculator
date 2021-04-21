@@ -1,14 +1,5 @@
 #include "ll.h"
 
-/**\brief îïåðàòîð > äëÿ äâóõ ll ÷èñåë
- * Ñðàâíèâàåò ïîñëåäîâàòåëüíî ñíà÷àëà çíàêè ÷èñåë, ïîòîì èõ äëèíó, ïîòîì íà÷èíàÿ ñ íàèáîëüøåãî ñðàâíèâàåò èõ ïîñèìâîëüíî
- * Íå çàâèñèò îò äðóãèõ ôóíêöèé è îïåðàòîðîâ
- * Àñèìïòîòèêà ïî âðåìåíè - O(n), êîíñòàíòà àñèìïòîòèêè 2
- * Àñèìïòîòèêà ïî ïàìÿòè - O(1), êîíñòàíòà àñèìïòîòèêè 2
- * \param lval const ll& ëåâîå ÷èñëî
- * \param rval const ll& ïðàâîå ÷èñëî
- * \return bool true, åñëè ëåâîå áîëüøå ïðàâîãî, èíà÷å false
- */
 bool operator >(const ll& lval, const ll& rval)
 {   if (lval.sign!=rval.sign)
         return lval.sign<rval.sign;
@@ -20,16 +11,8 @@ bool operator >(const ll& lval, const ll& rval)
             return (lval.num[i]>rval.num[i])^lval.sign;
     return 0;
 }
-/**\brief îïåðàòîð < äëÿ äâóõ ll ÷èñåë
- * Ñðàâíèâàåò ïîñëåäîâàòåëüíî ñíà÷àëà çíàêè ÷èñåë, ïîòîì èõ äëèíó, ïîòîì íà÷èíàÿ ñ íàèáîëüøåãî ñðàâíèâàåò èõ ïîñèìâîëüíî
- * Çàâèñèò îò îïåðàòîðîâ > è !=
- * Àñèìïòîòèêà ïî âðåìåíè - O(n), êîíñòàíòà àñèìïòîòèêè 2
- * Àñèìïòîòèêà ïî ïàìÿòè - O(1), êîíñòàíòà àñèìïòîòèêè 2
- * \param lval const ll& ëåâîå ÷èñëî
- * \param rval const ll& ïðàâîå ÷èñëî
- * \return bool true, åñëè ëåâîå ìåíüøå ïðàâîãî, èíà÷å false
- */
- bool operator < (const ll& lval, const ll& rval)
+
+bool operator < (const ll& lval, const ll& rval)
 {   return rval>lval;
 }
 
@@ -72,7 +55,7 @@ bool operator !=(const ll& lval, const ll& rval){
     return !(lval == rval);
 }
 
-template<typename T> //îáúÿâëåíèå ïàðàìåòðà øàáëîíà ôóíêöèè
+template<typename T> 
 bool operator >= (const T& lval, const ll& rval)
 {   return !(lval>rval);
 }
@@ -96,12 +79,6 @@ short ll::poz()
 {   if (this->num[0] == 0) return 0;
     else if (this->sign) return 1;
     else return 2;
-}
-=======
-#include "ll.h"
-
-namespace power{
-    const int mod = 1000000000;
 }
 
 std::ostream& operator<< (std::ostream& out, const ll& val)
@@ -163,29 +140,29 @@ ll operator+(const ll& lval, const ll& rval) {
 	long long minsize = std::min(lval.num.size(), rval.num.size());
 	long long maxsize = std::max(lval.num.size(), rval.num.size());
 /*
-* After addition of two elements programm adds first 9 elements to resultant vector and divides sum by 10^9 for sake of overflow tracing,
+*After addition of two elements programm adds first 9 elements to resultant vector and divides sum by 10^9 for sake of overflow tracing,
 *because if overflow happens this division's result would be 1, which we will add to next element, otherwise this division's result would be 0
 */
 	if (lval.sign == rval.sign) {
 		long long sum = 0;
 		for (int i = 0; i < minsize; i++) {
 			sum += lval.num[i] + rval.num[i];
-			result.num.push_back(sum % mod);
-			sum /= mod;
+			result.num.push_back(sum % power::mod);
+			sum /= power::mod;
 		}
 //Addition of remainding larger vector's elemenets, which weren't involved in addition.
 		if (lval.num.size() > rval.num.size()) {
 			for (int i = minsize; i < maxsize; i++) {
 				sum += lval.num[i];
-				result.num.push_back(sum % mod);
-				sum /= mod;
+				result.num.push_back(sum % power::mod);
+				sum /= power::mod;
 			}
 		}
 		else if (lval.num.size() < rval.num.size()) {
 			for (int i = minsize; i < maxsize; i++) {
 				sum += rval.num[i];
-				result.num.push_back(sum % mod);
-				sum /= mod;
+				result.num.push_back(sum % power::mod);
+				sum /= power::mod;
 			}
 		}
 //If after all those calculations programm got left 1, programm adds this 1 to next new rank
@@ -201,14 +178,14 @@ ll operator+(const ll& lval, const ll& rval) {
 		}
 		else if (lval.abs() >= rval.abs())
 			for (int i = 0; i < minsize; i++) {
-				sub = mod * (lval.num[i] < rval.num[i]) + lval.num[i] - rval.num[i] - sub;
+				sub = power::mod * (lval.num[i] < rval.num[i]) + lval.num[i] - rval.num[i] - sub;
 				result.num.push_back(sub);
 //Check for borrowing 1 from higher rank
 				sub = (lval.num[i] < rval.num[i]) ? 1 : 0;
 			}
 		else {
 			for (int i = 0; i < minsize; i++) {
-				sub = mod * (rval.num[i] < lval.num[i]) + rval.num[i] - lval.num[i] - sub;
+				sub = power::mod * (rval.num[i] < lval.num[i]) + rval.num[i] - lval.num[i] - sub;
 				result.num.push_back(sub);
 //Check for borrowing 1 from higher rank
 				sub = (rval.num[i] < lval.num[i]) ? 1 : 0;
@@ -217,14 +194,14 @@ ll operator+(const ll& lval, const ll& rval) {
 		}
 		if (lval.abs() >= rval.abs()) {
 			for (int i = minsize; i < maxsize; i++) {
-				sub = mod * (lval.num[i] < sub) + lval.num[i] - sub;
+				sub = power::mod * (lval.num[i] < sub) + lval.num[i] - sub;
 				if (sub > lval.num[i]) sub = 1;
 				result.num.push_back(sub);
 			}
 		}
 		else {
 			for (int i = minsize; i < maxsize; i++) {
-				sub = mod * (rval.num[i] < sub) + rval.num[i] - sub;
+				sub = power::mod * (rval.num[i] < sub) + rval.num[i] - sub;
 				if (sub > rval.num[i]) sub = 1;
 				result.num.push_back(sub);
 			}
