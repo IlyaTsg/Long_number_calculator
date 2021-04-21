@@ -41,8 +41,10 @@ public:
     template <typename T>
     friend bool operator > (const T&  lval, const ll& rval);
     friend bool operator !=(const ll& lval, const ll& rval);
-    friend bool operator >=(const ll& lval, const ll& rval);
-    friend bool operator <=(const ll& lval, const ll& rval);
+    template <typename T>
+    friend bool operator >=(const T& lval, const ll& rval);
+    template <typename T>
+    friend bool operator <=(const T& lval, const ll& rval);
     friend ll operator +(const ll& lval, const ll& rval);       //Z-6
     friend ll operator -(const ll& lval, const ll& rval);       //Z-7
     friend ll operator %(const ll& lval, const ll& rval);       //Z-10
@@ -60,3 +62,22 @@ public:
 };
 
 void fft(std::vector< std::complex<double> > &to, bool invert);
+
+template <class Type>
+Type gcd(Type a, Type b)
+{
+    while(a!=0 && b!=0){
+        Type tmp = a;
+        a = b;
+        b = tmp%b;
+    }
+    if(a>b) return a;
+    return b;
+}
+
+template <class Type>
+Type lcm(Type a, Type b)
+{
+    return a / gcd(a, b) * b;
+}
+

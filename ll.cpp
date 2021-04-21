@@ -280,3 +280,9 @@ ll::ll(std::string to){
     }
 };
 ll::ll(bool sigN, std::vector<long long> nuM): sign{ sigN }, num{ nuM }{};
+
+int main(void)
+{
+    std::cout << lcm(6, 9) << std::endl;
+    return 0;
+}
