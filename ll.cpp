@@ -55,19 +55,9 @@ bool operator !=(const ll& lval, const ll& rval){
     return !(lval == rval);
 }
 
-template<typename T> 
-bool operator >= (const T& lval, const ll& rval)
-{   return !(lval>rval);
-}
-
 template<typename T>
 bool operator >= (const T& lval, const ll& rval)
 {   return !(lval<rval);
-}
-
-template<typename T>
-bool operator <= (const T& lval, const ll& rval)
-{   return !(lval>rval);
 }
 
 template<typename T>

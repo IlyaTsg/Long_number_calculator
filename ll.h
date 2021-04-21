@@ -18,8 +18,7 @@ private:
 
 public:
     ll();
-    ll(bool sig, std::vector<long long> nu): sign(sig), num(nu){}
-    ll(int to) :num{ to % power::mod, to / power::mod % power::mod }, sign(to < 0){}
+    ll(int to);
     ll(long long to);
     ll(std::string to);
     ll(bool sigN, std::vector<long long> nuM);
