@@ -73,8 +73,6 @@ public:
     short poz();            //Z-2
     ll rsign();             //Z-3
 
-    ll fact();              //Ôàêòîðèàë
-    //Ïðî÷èå çàäà÷è äëÿ öåëûõ ÷èñåë
     friend ll divby2(ll val);
 };
 
@@ -395,4 +393,11 @@ template <class Type>
 Type lcm(Type a, Type b)
 {
     return a / gcd(a, b) * b;
+}
+
+ll fact(int digit)
+{
+    ll tmp = 1;
+    for(int i=1; i<=digit; i++) tmp = tmp*i;
+    return tmp;
 }
