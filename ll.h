@@ -387,13 +387,8 @@ ll operator %(const ll& lval, const ll& rval) { return lval - lval / rval * rval
 template <class Type>
 Type gcd(Type a, Type b)
 {
-    while(a!=0 && b!=0){
-        Type tmp = a;
-        a = b;
-        b = tmp%b;
-    }
-    if(a>b) return a;
-    return b;
+    if(b==0) return a;
+    return gcd(b, a%b);
 }
 
 template <class Type>
