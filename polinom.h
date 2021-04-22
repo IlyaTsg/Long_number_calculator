@@ -36,13 +36,50 @@ public:
 	template <class IND, class COEF> friend polinom<IND, COEF> operator %(polinom<IND, COEF>&, polinom<IND, COEF>&);
 	/*std::ostream& operator>> (std::ostream& out, const polinom& val);
 	vector< complex<T> > roots();
-	complex<T> substitution(T val);
-	polinom integral(T l_val, T r_val);
 	friend polinom gcd(polinom l_val, polinom r_val);*/
+	template <class IND, class COEF> friend COEF substitution(polinom<IND, COEF>& val, COEF& x);
+	template <class IND, class COEF> friend COEF integral(polinom<IND, COEF>& pol, COEF& l_val, COEF& r_val);
 	template <class IND, class COEF> friend polinom<IND, COEF> derivative(polinom<IND, COEF>& val);
-	template <class IND, class COEF> friend polinom<IND, COEF> integral(polinom<IND, COEF>& val, COEF C);
+	template <class IND, class COEF> friend polinom<IND, COEF> integral(polinom<IND, COEF>& val, COEF& C);
 	template <class IND, class COEF> friend std::ostream& operator<< (std::ostream&, polinom<IND, COEF>&);
 };
+template <class IND, class COEF> 
+COEF integral(polinom<IND, COEF>& pol, COEF& l_val, COEF& r_val)
+{
+	polinom<IND, COEF> F = integral(pol, l_val);
+	return (substitution(F, r_val) - substitution(F, l_val));
+}
+
+template <typename IND, typename COEF> 
+COEF power1(COEF key, IND ind)
+{
+	std::vector<COEF> power2;
+	power2.push_back(key);
+	for (COEF i = 2; i < ind; i = i * i) power2.push_back(power2[power2.size() - 1] * power2[power2.size() - 1]);
+	power2.push_back(power2[power2.size() - 1] * power2[power2.size() - 1]);
+
+	//for (int i = 0; i < power2.size(); i++) std::cout << power2[i] << ' ';
+	//std::cout << std::endl;
+
+	int sum = 0;
+	COEF ans = 1;
+	for (int i = 1, n = power2.size(); i <= n && sum < ind; i++)
+	{
+		if (sum + (1 << (n - i)) <= ind)
+		{
+			sum += (1 << (n - i));
+			ans = ans * power2[n - i];
+		}
+	}
+	return ans;
+}
+template <typename IND, typename COEF>
+COEF substitution(polinom<IND, COEF>& val, COEF& x)
+{
+	COEF sum = 0;
+	for (const IND& to : val.ind) sum = sum + val.coef[to] * power1(x, to);
+	return sum;
+}
 
 template <typename IND>
 std::vector<IND> merge(const std::vector<IND>& l_val, const std::vector<IND>& r_val)
@@ -175,7 +212,7 @@ polinom<IND, COEF> derivative(polinom<IND, COEF>& val)
 
 
 template <typename IND, typename COEF> 
-polinom<IND, COEF> integral(polinom<IND, COEF>& val, COEF C)
+polinom<IND, COEF> integral(polinom<IND, COEF>& val, COEF& C)
 {
 	std::vector<IND> new_ind;
 	std::map<IND, COEF> new_coef;
