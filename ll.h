@@ -401,3 +401,10 @@ ll fact(int digit)
     for(int i=1; i<=digit; i++) tmp = tmp*i;
     return tmp;
 }
+
+ll fib(int digit)
+{
+    if(digit==0) return 0;
+    if(digit==1) return 1;
+    return fib(digit-2) + fib(digit-1);
+}
