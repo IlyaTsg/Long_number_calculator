@@ -72,7 +72,6 @@ public:
     ll abs() const { return ll(0, num); }               //Z-1
     short poz();            //Z-2
     ll rsign();             //Z-3
-    ll gcd(ll to);          //N-13
 
     ll fact();              //Ôàêòîðèàë
     //Ïðî÷èå çàäà÷è äëÿ öåëûõ ÷èñåë
@@ -384,3 +383,21 @@ ll operator /(const ll& lval, const ll& rval)
 
 ll operator %(const ll& lval, const ll& rval) { return lval - lval / rval * rval;  }
 //The repair is over
+
+template <class Type>
+Type gcd(Type a, Type b)
+{
+    while(a!=0 && b!=0){
+        Type tmp = a;
+        a = b;
+        b = tmp%b;
+    }
+    if(a>b) return a;
+    return b;
+}
+
+template <class Type>
+Type lcm(Type a, Type b)
+{
+    return a / gcd(a, b) * b;
+}
