@@ -141,7 +141,7 @@ std::ostream& operator<< (std::ostream& out, polinom<IND, COEF>& val)
 		IND to = val.ind[n - i - 1];
 		if (i && val.coef[to] > 0) out << "+";
 		if (val.coef[to] == -1) out << '-';
-		else if (val.coef[to] != 1) out << val.coef[to];
+		else if (to == 0 || !(val.coef[to] <= 1.0001 && val.coef[to] >= 0.9999)) out << val.coef[to];
 		if (to > 0) out << 'x';
 		if (to > 1)
 		{
@@ -156,7 +156,7 @@ template <typename IND, typename COEF>
 polinom<IND, COEF> operator *(polinom<IND, COEF>& l_val, polinom<IND, COEF>& r_val)
 {
 	COEF comp = std::max(l_val.ind[l_val.ind.size() - 1], r_val.ind[r_val.ind.size() - 1]);
-	if (1 || comp * sizeof(COEF) > static_cast<long long>(1 << 30))
+	if (comp * sizeof(COEF) > static_cast<long long>(1 << 30))
 	{
 		std::vector<IND> new_ind;
 		std::map<IND, COEF> new_coef;
@@ -173,6 +173,45 @@ polinom<IND, COEF> operator *(polinom<IND, COEF>& l_val, polinom<IND, COEF>& r_v
 		for (int i = 1; i < n; i++) if (new_ind[i] != new_ind[i - 1] && new_coef[new_ind[i]] != 0) new_ind[l++] = new_ind[i];
 		new_ind.resize(l);
 		return polinom<IND, COEF>(new_ind, new_coef);
+	}
+	else 
+	{
+		int value = 0;
+		auto minorl = std::min_element(l_val.ind.begin(), l_val.ind.end());
+		auto minorr = std::min_element(r_val.ind.begin(), r_val.ind.end());
+		auto maxl = std::max_element(l_val.ind.begin(), l_val.ind.end());
+		auto maxr = std::max_element(r_val.ind.begin(), r_val.ind.end());
+		
+		std::vector < std::complex<long double>> fr, fl, result;
+		fr.resize((*maxr - (*minorr) + 1), value);
+		fl.resize((*maxl - (*minorl) + 1), value);
+		for (const auto& l : l_val.ind) fl[l - *minorl] = l_val.coef[l];
+		for (const auto& r : r_val.ind) fr[r - *minorr] = r_val.coef[r];
+		size_t n = 1;
+		while (n < std::max(fr.size(), fl.size())) n <<= 1;
+		n <<= 1;
+		fr.resize(n, value); fl.resize(n); // даем места под 2^(max(fr.size(), fl.size())+1) коэффициентов
+		fft(fr, false);
+		fft(fl, false);
+		for (size_t i = 0; i < n; i++) fr[i] *= fl[i]; // перемножаем то, что наполучали прямым преобразованием Фурье
+		fft(fr, true); 
+		result.resize(n);
+		std::vector<long double> res;
+		res.resize(n);
+		for (size_t i = 0; i < n; i++) res[i] = double(fr[i].real());//берем вещественную часть от каждого коэффициента
+		std::vector<IND> newind;
+		std::map<IND, COEF> newcoef;
+		int vinos = *minorl + (*minorr);
+		for (size_t i = 0; i <= *maxl + *maxr; i++)
+		{
+			if (i < res.size() && res[i] != 0) 
+			{
+				newind.push_back(i + vinos);
+				newcoef[i + vinos] = res[i];
+				std::cout << "LoX\n";
+			}
+		}
+		return polinom<IND, COEF>(newind, newcoef);	
 	}
 }
 
