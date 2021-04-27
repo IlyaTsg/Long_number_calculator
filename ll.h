@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <complex>
+#include <algorithm>
 
 namespace power
 {
@@ -31,8 +32,9 @@ public:
     ll(long long to);
     ll(std::string to);
 
-    std::vector<long long> getVec() { return num; }
-    bool getSign() { return sign; }
+    std::vector<long long> getVec() const { return num; }
+    bool getSign() const { return sign; }
+	void setSign(bool val) { sign = val; }
 
     ll operator -() const { return ll((!(num.size() == 1 && num[0] == 0) - sign), num); }
 
@@ -139,7 +141,7 @@ std::ostream& operator<< (std::ostream& out, const ll& val)
                 for (long long x = val.num[i]; x > 0; x /= 10, h++);
                 if (k) for (int j = 0; j < 9 - h; j++) out << '0';
             }
-            out << val.num[i];
+            if(val.num[i] != 0) out << val.num[i];
             k = true;
         }
     }
@@ -384,3 +386,20 @@ ll operator /(const ll& lval, const ll& rval)
 
 ll operator %(const ll& lval, const ll& rval) { return lval - lval / rval * rval;  }
 //The repair is over
+
+template <class Type>
+Type gcd(Type a, Type b)
+{
+	if (a < 0) a = -a;
+	if (b < 0) b = -b;
+	if (b == 0) return a;
+	return gcd(b, a % b);
+}
+
+template <class Type>
+Type lcm(Type a, Type b)
+{
+	if (a < 0) a = -a;
+	if (b < 0) b = -b;
+	return a / gcd(a, b) * b;
+}
