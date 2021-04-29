@@ -174,14 +174,13 @@ polinom<IND, COEF> operator *(polinom<IND, COEF>& l_val, polinom<IND, COEF>& r_v
 		new_ind.resize(l);
 		return polinom<IND, COEF>(new_ind, new_coef);
 	}
-	else
+	else 
 	{
 		int value = 0;
 		auto minorl = std::min_element(l_val.ind.begin(), l_val.ind.end());
 		auto minorr = std::min_element(r_val.ind.begin(), r_val.ind.end());
 		auto maxl = std::max_element(l_val.ind.begin(), l_val.ind.end());
 		auto maxr = std::max_element(r_val.ind.begin(), r_val.ind.end());
-
 		std::vector < std::complex<long double>> fr, fl, result;
 		fr.resize((*maxr - (*minorr) + 1), value);
 		fl.resize((*maxl - (*minorl) + 1), value);
@@ -190,28 +189,27 @@ polinom<IND, COEF> operator *(polinom<IND, COEF>& l_val, polinom<IND, COEF>& r_v
 		size_t n = 1;
 		while (n < std::max(fr.size(), fl.size())) n <<= 1;
 		n <<= 1;
-		fr.resize(n, value); fl.resize(n); // äàåì ìåñòà ïîä 2^(max(fr.size(), fl.size())+1) êîýôôèöèåíòîâ
+		fr.resize(n, value); fl.resize(n); // Ð´Ð°ÐµÐ¼ Ð¼ÐµÑÑ‚Ð° Ð¿Ð¾Ð´ 2^(max(fr.size(), fl.size())+1) ÐºÐ¾ÑÑ„Ñ„Ð¸Ñ†Ð¸ÐµÐ½Ñ‚Ð¾Ð²
 		fft(fr, false);
 		fft(fl, false);
-		for (size_t i = 0; i < n; i++) fr[i] *= fl[i]; // ïåðåìíîæàåì òî, ÷òî íàïîëó÷àëè ïðÿìûì ïðåîáðàçîâàíèåì Ôóðüå
-		fft(fr, true);
+		for (size_t i = 0; i < n; i++) fr[i] *= fl[i]; // Ð¿ÐµÑ€ÐµÐ¼Ð½Ð¾Ð¶Ð°ÐµÐ¼ Ñ‚Ð¾, Ñ‡Ñ‚Ð¾ Ð½Ð°Ð¿Ð¾Ð»ÑƒÑ‡Ð°Ð»Ð¸ Ð¿Ñ€ÑÐ¼Ñ‹Ð¼ Ð¿Ñ€ÐµÐ¾Ð±Ñ€Ð°Ð·Ð¾Ð²Ð°Ð½Ð¸ÐµÐ¼ Ð¤ÑƒÑ€ÑŒÐµ
+		fft(fr, true); 
 		result.resize(n);
 		std::vector<long double> res;
 		res.resize(n);
-		for (size_t i = 0; i < n; i++) res[i] = double(fr[i].real());//áåðåì âåùåñòâåííóþ ÷àñòü îò êàæäîãî êîýôôèöèåíòà
+		for (size_t i = 0; i < n; i++) res[i] = double(fr[i].real());//Ð±ÐµÑ€ÐµÐ¼ Ð²ÐµÑ‰ÐµÑÑ‚Ð²ÐµÐ½Ð½ÑƒÑŽ Ñ‡Ð°ÑÑ‚ÑŒ Ð¾Ñ‚ ÐºÐ°Ð¶Ð´Ð¾Ð³Ð¾ ÐºÐ¾ÑÑ„Ñ„Ð¸Ñ†Ð¸ÐµÐ½Ñ‚Ð°
 		std::vector<IND> newind;
 		std::map<IND, COEF> newcoef;
 		int vinos = *minorl + (*minorr);
 		for (size_t i = 0; i <= *maxl + *maxr; i++)
 		{
-			if (i < res.size() && res[i] != 0)
+			if (i < res.size() && res[i] != 0) 
 			{
 				newind.push_back(i + vinos);
 				newcoef[i + vinos] = res[i];
-				std::cout << "LoX\n";
 			}
 		}
-		return polinom<IND, COEF>(newind, newcoef);
+		return polinom<IND, COEF>(newind, newcoef);	
 	}
 }
 

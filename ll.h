@@ -74,10 +74,7 @@ public:
     ll abs() const { return ll(0, num); }               //Z-1
     short poz();            //Z-2
     ll rsign();             //Z-3
-    ll gcd(ll to);          //N-13
 
-    ll fact();              //Ôàêòîðèàë
-    //Ïðî÷èå çàäà÷è äëÿ öåëûõ ÷èñåë
     friend ll divby2(ll val);
 };
 
@@ -388,18 +385,14 @@ ll operator %(const ll& lval, const ll& rval) { return lval - lval / rval * rval
 //The repair is over
 
 template <class Type>
-Type gcd(Type a, Type b)
-{
-	if (a < 0) a = -a;
-	if (b < 0) b = -b;
-	if (b == 0) return a;
-	return gcd(b, a % b);
-}
+Type gcd(Type a, Type b) { return (b == 0 ? a ; gcd(b, a % b)); }
 
 template <class Type>
-Type lcm(Type a, Type b)
+Type lcm(Type a, Type b) { return a / gcd(a, b) * b; }
+
+ll fact(int digit)
 {
-	if (a < 0) a = -a;
-	if (b < 0) b = -b;
-	return a / gcd(a, b) * b;
+    ll tmp = 1;
+    for(int i=1; i<=digit; i++) tmp = tmp*i;
+    return tmp;
 }
