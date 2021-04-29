@@ -18,7 +18,7 @@ vln::vln(std::string to){
 vln::vln(std::vector<long long> nuM){
     ll(nuM);
 };
-
+//Новиков Владислав 0306
 bool operator ==(const vln &lval, const vln &rval)
 {
     return lval.num == rval.num;
