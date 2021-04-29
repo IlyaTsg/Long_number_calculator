@@ -463,12 +463,15 @@ ll operator /(const ll& lval, const ll& rval)
 ll operator %(const ll& lval, const ll& rval) { return lval - lval / rval * rval;  }
 //The repair is over
 
+// Илья Цыганков гр. 0306
 template <class Type>
 Type gcd(Type a, Type b) { return (b==0 ? a:gcd(b, a%b)); }
 
+// Илья Цыганков гр. 0306
 template <class Type>
 Type lcm(Type a, Type b) { return a / gcd(a, b) * b; }
 
+// Илья Цыганков гр. 0306
 ll fact(int digit)
 {
     ll tmp = 1;
@@ -476,6 +479,7 @@ ll fact(int digit)
     return tmp;
 }
 
+// Илья Цыганков гр. 0306
 ll fib(int digit)
 {
     static std::map<long long, ll> fibm;
