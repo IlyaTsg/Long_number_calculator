@@ -2,6 +2,7 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <stack>
 #include <string>
 #include <map>
 
@@ -275,4 +276,40 @@ polinom<IND, COEF> operator %(polinom<IND, COEF>& l_val, polinom<IND, COEF>& r_v
 	help = help * r_val;
 	ans = l_val - help;
 	return ans;
+}
+
+// Илья Цыганков гр. 0306
+double act(std::string sign, double a, double b)
+{
+	if(sign=="+") return(a+b);
+	else if(sign=="-") return(a-b);
+	else if(sign=="*") return(a*b);
+    else return 0;
+}
+
+// Илья Цыганков гр. 0306
+void caluclate(std::stack<double> &digit, std::stack<std::string> &operation)
+{	
+	while(digit.size()!=1 && operation.size()){
+		double a = digit.top();
+		digit.pop();
+		double b = digit.top();
+		std::string op1 = operation.top();
+		operation.pop();
+        std::string op2;
+		if(operation.size()) op2 = operation.top();
+		if(op1=="+" || op1=="-"){
+			if(op2=="*"){
+				caluclate(digit, operation);
+                b = digit.top();
+			}
+            digit.pop();
+            if(operation.size()) operation.pop();
+			digit.push(act(op1, a, b));
+		}else if(op1=="*"){
+            digit.pop();
+			digit.push(act(op1, a, b));
+            caluclate(digit, operation);
+		}
+	}
 }
