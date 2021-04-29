@@ -6,7 +6,7 @@
 #include "ll.h"
 #include "polinom.h"
 
-
+//РўСѓСЂСѓС€РµРІ РўРёРјСѓСЂ 0306
 template <class T>
 class rational
 {
@@ -21,6 +21,7 @@ class rational
 		rational<T> operator -() { num = -num; }
 		T getNum() { return num; }
 		T getDen() { return den; }
+//РЁРєРѕРґР° РњР°СЂРёСЏ 0306
 		template <class T> friend bool operator ==(const rational<T>& lv, const rational<T>& rv) {
 			return (lv.num == rv.num && lv.den == rv.den);
 		}
@@ -74,13 +75,14 @@ class rational
 			red(res);
 			return res;
 		}
+//РўСѓСЂСѓС€РµРІ РўРёРјСѓСЂ 0306
 		template <class T> friend std::ostream& operator<< (std::ostream& out, const rational<T>& val);
 		//Overload of << for rational<ll>
 		friend std::ostream& operator<< (std::ostream& out, const rational<ll>& val) {
 			out << val.num << '/' << val.den;
 			return out;
 		}
-		//Сокращение
+		//Reduction
 		void static red(rational<T>& to) {
 			T frac_gcd = gcd(to.num, to.den);
 			to.num = to.num / frac_gcd;
@@ -90,7 +92,8 @@ class rational
 				to.num.setSign(false);
 			}
 		}
-		//Приведение к общему знаменателю
+//РЁРєРѕРґР° РњР°СЂРёСЏ 0306
+		//Reduction to a common denominator
 		void static comden(rational<T>& lval, rational<T>& rval) {
 			T cden = lcm(lval.den, rval.den);
 			lval.num = lval.num * (cden / lval.den);
@@ -99,7 +102,7 @@ class rational
 			rval.den = cden;
 		}
 };
-
+//РўСѓСЂСѓС€РµРІ РўРёРјСѓСЂ 0306
 ////Ctor specializations
 typedef rational<ll> rational_ll;
 ////String rat format - "(sign)num/den"
