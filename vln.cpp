@@ -1,5 +1,4 @@
 #include "vln.h"
-#include "ll.h"
 #include <iostream>
 
 //Пинаев Артём 0306
