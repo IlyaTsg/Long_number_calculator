@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include "ll.h"
+
+//Комраков Андрей 0306
 class vln
 {
 private:
