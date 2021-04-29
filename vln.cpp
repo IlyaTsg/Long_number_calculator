@@ -38,7 +38,7 @@ vln operator +(const vln& lval, const vln& rval){
     vln temp = vln();
     temp.num = lval.num + rval.num;
     return temp;
-}                         
+}
 template <typename T> vln operator +(const vln& lval, const T&  rval) { return (lval + vln(rval)); }
 template <typename T> vln operator +(const T&  lval, const vln& rval) { return (vln(lval) + rval); }
 
@@ -70,3 +70,8 @@ std::ostream& operator<< (std::ostream& out, const vln& val) {
 	out << val.num;
 	return out;
 }
+
+/*
+Это русский комментарий, сделанный мною в code blocks
+Здорово, правда?
+*/
