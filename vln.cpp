@@ -3,10 +3,10 @@
 
 //Пинаев Артём 0306
 vln::vln(): num{ 0 }{}
-vln::vln(int to) { ll(to); }
-vln::vln(long long to) { ll(to); }
-vln::vln(std::string to) { ll(to); }
-vln::vln(std::vector<long long> nuM) { ll(nuM); }
+vln::vln(int to): num{ ll(to) }{}
+vln::vln(long long to): num{ ll(to) }{}
+vln::vln(std::string to): num{ ll(to) }{}
+vln::vln(std::vector<long long> nuM): num{ ll(false, nuM) }{}
 
 //Новиков Владислав 0306
 bool operator ==(const vln &lval, const vln &rval) { return (lval.num == rval.num); }
