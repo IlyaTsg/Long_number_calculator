@@ -284,6 +284,7 @@ double act(std::string sign, double a, double b)
 	if(sign=="+") return(a+b);
 	else if(sign=="-") return(a-b);
 	else if(sign=="*") return(a*b);
+	else if(sign=="/") return(a/b);
     else return 0;
 }
 
@@ -299,14 +300,14 @@ void caluclate(std::stack<double> &digit, std::stack<std::string> &operation)
         std::string op2;
 		if(operation.size()) op2 = operation.top();
 		if(op1=="+" || op1=="-"){
-			if(op2=="*"){
+			if(op2=="*" || op2=="/"){
 				caluclate(digit, operation);
                 b = digit.top();
 			}
             digit.pop();
             if(operation.size()) operation.pop();
 			digit.push(act(op1, a, b));
-		}else if(op1=="*"){
+		}else if(op1=="*" || op2=="/"){
             digit.pop();
 			digit.push(act(op1, a, b));
             caluclate(digit, operation);
