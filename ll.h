@@ -65,7 +65,10 @@ public:
     friend ll operator +(const ll& lval, const ll& rval);       //Z-6
     friend ll operator -(const ll& lval, const ll& rval) { return (lval + (-rval)); }       //Z-7
     friend ll operator %(const ll& lval, const ll& rval);       //Z-10
+    friend long long operator %(const ll& l_val, int r_val)
     friend ll operator *(const ll& lval, const ll& rval);       //Z-8
+    friend ll operator *(const ll& lval, int rval);
+    friend ll operator *(int lval, const ll& rval) { return rval * lval; }
     friend ll operator /(const ll& lval, const ll& rval);       //Z-9
     friend std::ostream& operator<< (std::ostream& out, const ll& val);
 
@@ -103,6 +106,59 @@ bool operator >(const ll& lval, const ll& rval)
  * \return bool true, åñëè ëåâîå ìåíüøå ïðàâîãî, èíà÷å false
  */
 
+long long operator %(const ll& l_val, int r_val)
+{
+    long long sum = 0;
+    for (long long i = 0, n = l_val.num.size() , p = 1; i < n; i++)
+    {
+        sum = (sum + l_val.num[i] * p) % r_val;
+        p = p * power::mod % r_val;
+    }
+    return sum % r_val;
+}
+
+long double sin(ll a)
+{
+    long double key = static_cast<long double>(a % 360) / 180 * power::PI;
+    return sin(key);
+}
+
+long double cos(ll a)
+{
+    long double key = static_cast<long double>(a % 360) / 180 * power::PI;
+    return cos(key);
+}
+
+long double tg(ll a)
+{
+    long double key = static_cast<long double>(a % 360) / 180 * power::PI;
+    return sin(key) / cos(key);
+}
+
+long double ctg(ll a)
+{
+    long double key = static_cast<long double>(a % 360) / 180 * power::PI;
+    return cos(key) / sin(key);
+}
+
+ll operator *(const ll& lval, int rval)
+{
+    bool new_sign = (lval.sign ^ (rval < 0));
+    if (rval < 0) rval *= -1;
+    std::vector<long long> tmp = lval.num;
+    long long sum = 0, r = rval;
+    for (int i = 0, n = tmp.size(); i < n; i++)
+    {
+        tmp[i] *= r;
+        tmp[i] += sum;
+        sum = tmp[i] / power::mod;
+        tmp[i] %= power::mod;
+    }
+    if (sum != 0) tmp.push_back(sum);
+    flush(tmp);
+    return ll(new_sign, tmp);
+}
+
 bool operator ==(const ll& lval, const ll& rval) 
 {
     int len1 = lval.num.size();
@@ -136,7 +192,7 @@ std::ostream& operator<< (std::ostream& out, const ll& val)
                 for (long long x = val.num[i]; x > 0; x /= 10, h++);
                 if (k) for (int j = 0; j < 9 - h; j++) out << '0';
             }
-            out << val.num[i];
+            if(val.num[i] != 0) out << val.num[i];
             k = true;
         }
     }
@@ -398,6 +454,6 @@ Type lcm(Type a, Type b)
 ll fact(int digit)
 {
     ll tmp = 1;
-    for(int i=1; i<=digit; i++) tmp = tmp*i;
+    for(int i = 2; i <= digit; i++) tmp = tmp * i;
     return tmp;
 }
