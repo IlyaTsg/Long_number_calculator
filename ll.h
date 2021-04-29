@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <complex>
+#include <map>
 
 void flush(std::vector<long long>& g)
 {
@@ -66,7 +67,7 @@ public:
     friend ll operator +(const ll& lval, const ll& rval);       //Z-6
     friend ll operator -(const ll& lval, const ll& rval) { return (lval + (-rval)); }       //Z-7
     friend ll operator %(const ll& lval, const ll& rval);       //Z-10
-    friend long long operator %(const ll& l_val, int r_val)
+    friend long long operator %(const ll& l_val, int r_val);
     friend ll operator *(const ll& lval, const ll& rval);       //Z-8
     friend ll operator *(const ll& lval, int rval);
     friend ll operator *(int lval, const ll& rval) { return (rval * lval); }
@@ -477,7 +478,21 @@ ll fact(int digit)
 
 ll fib(int digit)
 {
-    if(digit==0) return 0;
-    if(digit==1) return 1;
-    return fib(digit-2) + fib(digit-1);
+    static std::map<long long, ll> fibm;
+    if(fibm[digit] == 0){
+        fibm[0]=0;
+        fibm[1]=1;
+        fibm[2]=1;
+        fibm[3]=2;
+        if(digit < 4) return fibm[digit];
+        else if(digit%2){
+            fibm[digit] = fib((digit-1)/2 + 1)*fib((digit-1)/2 + 2) - fib((digit-1)/2)*fib((digit-1)/2 - 1);
+            return fibm[digit];
+        }
+        else{
+            fibm[digit] = fib(digit/2)*(fib(digit/2-1) + fib(digit/2+1));
+            return fibm[digit];
+        }   
+    }
+    else return fibm[digit];
 }
