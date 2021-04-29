@@ -4,18 +4,19 @@
 #include <string>
 #include <complex>
 
-namespace power
-{
-    const int mod = 1'000'000'000;
-    const double PI = 3.141592653589793238462643383279;
-}
-
 void flush(std::vector<long long>& g)
 {
     int k = g.size() - 1;
     if (k <= 0) return;
     while (k > 0 && g[k] == 0) k--;
     g.resize(k + 1);
+}
+
+int log2(long long n)
+{
+    int s = 0;
+    for (int i = 1; i <= n; i *= 2, s++);
+    return s;
 }
 
 class ll
@@ -49,8 +50,8 @@ public:
     template <typename T> friend bool operator < (const T& lval, const ll& rval) { return (ll(lval) < rval); }
 
     friend bool operator !=(const ll& lval, const ll& rval) { return !(lval == rval); }
-    template <typename T> friend bool operator !=(const T& lval, const ll& rval) { return !(ll(lval) != rval); }
-    template <typename T> friend bool operator !=(const ll& lval, const T& rval) { return !(lval != ll(rval)); }
+    template <typename T> friend bool operator !=(const T& lval, const ll& rval) { return (ll(lval) != rval); }
+    template <typename T> friend bool operator !=(const ll& lval, const T& rval) { return (lval != ll(rval)); }
     
     friend bool operator >=(const ll& lval, const ll& rval) { return !(lval < rval); }
     template <typename T> friend bool operator >=(const T& lval, const ll& rval) { return !(ll(lval) < rval); }
@@ -68,7 +69,7 @@ public:
     friend long long operator %(const ll& l_val, int r_val)
     friend ll operator *(const ll& lval, const ll& rval);       //Z-8
     friend ll operator *(const ll& lval, int rval);
-    friend ll operator *(int lval, const ll& rval) { return rval * lval; }
+    friend ll operator *(int lval, const ll& rval) { return (rval * lval); }
     friend ll operator /(const ll& lval, const ll& rval);       //Z-9
     friend std::ostream& operator<< (std::ostream& out, const ll& val);
 
@@ -77,7 +78,27 @@ public:
     ll rsign();             //Z-3
 
     friend ll divby2(ll val);
+    int len()
+    {
+        int s = (num.size() - 1) * 9, h = 0;
+        for (int x = num[num.size() - 1]; x != 0; x /= 10, h++);
+        return s + h;
+    }
 };
+
+namespace power
+{
+    const int mod = 1'000'000'000;
+    const double PI = 3.141592653589793238462643383279;
+}
+
+std::istream& operator>> (std::istream& in, ll& val)
+{
+    std::string key;
+    std::getline(in, key);
+    val = ll(key);
+    return in;
+}
 
 /**\brief îïåðàòîð > äëÿ äâóõ ll ÷èñåë
  * Ñðàâíèâàåò ïîñëåäîâàòåëüíî ñíà÷àëà çíàêè ÷èñåë, ïîòîì èõ äëèíó, ïîòîì íà÷èíàÿ ñ íàèáîëüøåãî ñðàâíèâàåò èõ ïîñèìâîëüíî
@@ -175,6 +196,9 @@ short ll::poz()
 
 std::ostream& operator<< (std::ostream& out, const ll& val)
 {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(NULL);
+    int n = val.num.size();
     if (val.num.size() == 1 && val.num[0] == 0)
     {
         out << 0;
@@ -184,17 +208,13 @@ std::ostream& operator<< (std::ostream& out, const ll& val)
     if (val.sign == 1) out << '-';
     for (int i = val.num.size() - 1; i >= 0; i--)
     {
-        if (k || val.num[i] != 0)
+        if (n - i != 1)
         {
             int h = 0;
-            if (k)
-            {
-                for (long long x = val.num[i]; x > 0; x /= 10, h++);
-                if (k) for (int j = 0; j < 9 - h; j++) out << '0';
-            }
-            if(val.num[i] != 0) out << val.num[i];
-            k = true;
+            for (long long x = val.num[i]; x > 0; x /= 10, h++);
+            for (int j = 0; j < 9 - h; j++) out << '0';
         }
+        if(val.num[i] != 0) out << val.num[i];
     }
     return out;
 }
@@ -384,8 +404,12 @@ ll::ll(std::string to)
     if (sign) to.erase(0, 1);
     for (int len = to.length(), i = len - 1; i >= 0; i--) 
     {
-        while(to[i] == static_cast<char>(39)) to.erase(i, 1);
-        digit = digit + (static_cast<long long>(to[i]) - 48) * degree;
+        while (i && to[i] == static_cast<char>(39))
+        {
+            to.erase(i, 1);
+            i--;
+            len--;
+        }        digit = digit + (static_cast<long long>(to[i]) - 48) * degree;
         degree *= 10;
         if (!((len - i) % 9) || !i) 
         {
@@ -439,17 +463,10 @@ ll operator %(const ll& lval, const ll& rval) { return lval - lval / rval * rval
 //The repair is over
 
 template <class Type>
-Type gcd(Type a, Type b)
-{
-    if(b==0) return a;
-    return gcd(b, a%b);
-}
+Type gcd(Type a, Type b) { return (b==0 ? a:gcd(b, a%b)); }
 
 template <class Type>
-Type lcm(Type a, Type b)
-{
-    return a / gcd(a, b) * b;
-}
+Type lcm(Type a, Type b) { return a / gcd(a, b) * b; }
 
 ll fact(int digit)
 {
