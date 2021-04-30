@@ -1,14 +1,14 @@
 /**\file vln.h
- * \brief Cодержит в себе класс целых чисел \ref vln "класс длинных натуральных"
- * \authors Андрей, Артём и Владислав
+ * \brief CРѕРґРµСЂР¶РёС‚ РІ СЃРµР±Рµ РєР»Р°СЃСЃ С†РµР»С‹С… С‡РёСЃРµР» \ref vln "РєР»Р°СЃСЃ РґР»РёРЅРЅС‹С… РЅР°С‚СѓСЂР°Р»СЊРЅС‹С…"
+ * \authors РђРЅРґСЂРµР№, РђСЂС‚С‘Рј Рё Р’Р»Р°РґРёСЃР»Р°РІ
 */
 #pragma once
 #include "ll.h"
 /** \class vln
- *  \brief Класс очень длинных натуральных чисел
- *	\details Реализует в себе все необходимо-достаточные возможности для работы с очень длинным натуральными числами, такие как сравнение, и простейщие арифметические операции, а так же вывод их в стандартные потоки\n
- *  Само длинное число представлено в ввиде массива его цифр, сгруппированных по 9
- *  \authors Андрей, Артём и Владислав
+ *  \brief РљР»Р°СЃСЃ РѕС‡РµРЅСЊ РґР»РёРЅРЅС‹С… РЅР°С‚СѓСЂР°Р»СЊРЅС‹С… С‡РёСЃРµР»
+ *	\details Р РµР°Р»РёР·СѓРµС‚ РІ СЃРµР±Рµ РІСЃРµ РЅРµРѕР±С…РѕРґРёРјРѕ-РґРѕСЃС‚Р°С‚РѕС‡РЅС‹Рµ РІРѕР·РјРѕР¶РЅРѕСЃС‚Рё РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РѕС‡РµРЅСЊ РґР»РёРЅРЅС‹Рј РЅР°С‚СѓСЂР°Р»СЊРЅС‹РјРё С‡РёСЃР»Р°РјРё, С‚Р°РєРёРµ РєР°Рє СЃСЂР°РІРЅРµРЅРёРµ, Рё РїСЂРѕСЃС‚РµР№С‰РёРµ Р°СЂРёС„РјРµС‚РёС‡РµСЃРєРёРµ РѕРїРµСЂР°С†РёРё, Р° С‚Р°Рє Р¶Рµ РІС‹РІРѕРґ РёС… РІ СЃС‚Р°РЅРґР°СЂС‚РЅС‹Рµ РїРѕС‚РѕРєРё\n
+ *  РЎР°РјРѕ РґР»РёРЅРЅРѕРµ С‡РёСЃР»Рѕ РїСЂРµРґСЃС‚Р°РІР»РµРЅРѕ РІ РІРІРёРґРµ РјР°СЃСЃРёРІР° РµРіРѕ С†РёС„СЂ, СЃРіСЂСѓРїРїРёСЂРѕРІР°РЅРЅС‹С… РїРѕ 9
+ *  \authors РђРЅРґСЂРµР№, РђСЂС‚С‘Рј Рё Р’Р»Р°РґРёСЃР»Р°РІ
  */
 class vln
 {
@@ -16,14 +16,14 @@ private:
     ll num;
 
 public:
-//Пинаев Артём 0306
+//РџРёРЅР°РµРІ РђСЂС‚С‘Рј 0306
     vln(): num{ 0 }{}
     vln(int to): num{ ll(to) }{}
     vln(long long to): num{ ll(to) }{}
     vln(std::string to): num{ ll(to) }{}
     vln(std::vector<long long> nuM): num{ ll(false, nuM) }{}
     friend std::ostream& operator<< (std::ostream& out, const vln& val);
-//Новиков Владислав 0306
+//РќРѕРІРёРєРѕРІ Р’Р»Р°РґРёСЃР»Р°РІ 0306
     friend bool operator ==(const vln &lval, const vln &rval) { return (lval.num == rval.num); }
     template <typename T> friend bool operator ==(const vln& lval, const T&  rval) { return (lval == vln(rval)); }
     template <typename T> friend bool operator ==(const T&  lval, const vln& rval) { return (vln(lval) == rval); }
@@ -42,14 +42,14 @@ public:
     friend bool operator <=(const vln& lval, const vln& rval) { return (lval.num <= rval.num); }
     template <typename T> friend bool operator <=(const vln& lval, const T&  rval) { return (lval <= vln(rval)); }
     template <typename T> friend bool operator <=(const T&  lval, const vln& rval) { return (vln(lval) <= rval); }
-//Пинаев Артём 0306
+//РџРёРЅР°РµРІ РђСЂС‚С‘Рј 0306
     friend vln operator +(const vln& lval, const vln& rval);       //N4
     template <typename T> friend vln operator +(const vln& lval, const T&  rval) { return (lval + vln(rval)); }
     template <typename T> friend vln operator +(const T&  lval, const vln& rval) { return (vln(lval) + rval); }
     friend vln operator -(const vln& lval, const vln& rval);       //N5
     template <typename T> friend vln operator -(const vln& lval, const T&  rval) { return (lval - vln(rval)); }
     template <typename T> friend vln operator -(const T&  lval, const vln& rval) { return (vln(lval) - rval); }
-//Андрей Комраков
+//РђРЅРґСЂРµР№ РљРѕРјСЂР°РєРѕРІ
     friend vln operator *(const vln& lval, const vln& rval);       //N8
     template <typename T> friend vln operator *(const vln& lval, const T&  rval) { return (lval * vln(rval)); }
     template <typename T> friend vln operator *(const T&  lval, const vln& rval) { return (vln(lval) * rval); }
@@ -68,12 +68,12 @@ public:
     vln div(const vln& secval);  //*N10
 };
 
-//Новиков Владислав 0306
-/** \brief Сравнение 2 чисел
- * \details Сравнение натуральных чисел: 2 - если первое больше второго, 0, если равно, 1 иначе.
- * \param secval const vln& второе число, с которым происходит сравнение
- * \return char 2 - если первое больше второго, 0, если равно, иначе 1
- * \authors Владислав
+//РќРѕРІРёРєРѕРІ Р’Р»Р°РґРёСЃР»Р°РІ 0306
+/** \brief РЎСЂР°РІРЅРµРЅРёРµ 2 С‡РёСЃРµР»
+ * \details РЎСЂР°РІРЅРµРЅРёРµ РЅР°С‚СѓСЂР°Р»СЊРЅС‹С… С‡РёСЃРµР»: 2 - РµСЃР»Рё РїРµСЂРІРѕРµ Р±РѕР»СЊС€Рµ РІС‚РѕСЂРѕРіРѕ, 0, РµСЃР»Рё СЂР°РІРЅРѕ, 1 РёРЅР°С‡Рµ.
+ * \param secval const vln& РІС‚РѕСЂРѕРµ С‡РёСЃР»Рѕ, СЃ РєРѕС‚РѕСЂС‹Рј РїСЂРѕРёСЃС…РѕРґРёС‚ СЃСЂР°РІРЅРµРЅРёРµ
+ * \return char 2 - РµСЃР»Рё РїРµСЂРІРѕРµ Р±РѕР»СЊС€Рµ РІС‚РѕСЂРѕРіРѕ, 0, РµСЃР»Рё СЂР°РІРЅРѕ, РёРЅР°С‡Рµ 1
+ * \authors Р’Р»Р°РґРёСЃР»Р°РІ
  */
 char vln::com(const vln& secval)
 {
@@ -82,29 +82,29 @@ char vln::com(const vln& secval)
     else return 1;
 }
 
-/** \brief Равенство нулю
- * \details Проверка на ноль: если число не равно нулю, то «да» иначе «нет»
- * \authors Владислав
- * \return bool true если оно равно нулю, false если не равно
+/** \brief Р Р°РІРµРЅСЃС‚РІРѕ РЅСѓР»СЋ
+ * \details РџСЂРѕРІРµСЂРєР° РЅР° РЅРѕР»СЊ: РµСЃР»Рё С‡РёСЃР»Рѕ РЅРµ СЂР°РІРЅРѕ РЅСѓР»СЋ, С‚Рѕ В«РґР°В» РёРЅР°С‡Рµ В«РЅРµС‚В»
+ * \authors Р’Р»Р°РґРёСЃР»Р°РІ
+ * \return bool true РµСЃР»Рё РѕРЅРѕ СЂР°РІРЅРѕ РЅСѓР»СЋ, false РµСЃР»Рё РЅРµ СЂР°РІРЅРѕ
  */
 bool vln::nzer() { return num == 0; }
 
-//Пинаев Артём 0306
-/** \brief Инкремент
- * \details Добавление 1 к натуральному числу
- * \authors Артём
- * \return vln полученное число
+//РџРёРЅР°РµРІ РђСЂС‚С‘Рј 0306
+/** \brief РРЅРєСЂРµРјРµРЅС‚
+ * \details Р”РѕР±Р°РІР»РµРЅРёРµ 1 Рє РЅР°С‚СѓСЂР°Р»СЊРЅРѕРјСѓ С‡РёСЃР»Сѓ
+ * \authors РђСЂС‚С‘Рј
+ * \return vln РїРѕР»СѓС‡РµРЅРЅРѕРµ С‡РёСЃР»Рѕ
  */
 vln vln::inc(){
     this->num = this->num + 1;
     return *this;
 };                   //N3
 
-/** \brief Умножает на 10^k
- * \details Умножение натурального числа на 10^k
- * \param k степень 10
- * \authors Андрей
- * \return vln полученное число
+/** \brief РЈРјРЅРѕР¶Р°РµС‚ РЅР° 10^k
+ * \details РЈРјРЅРѕР¶РµРЅРёРµ РЅР°С‚СѓСЂР°Р»СЊРЅРѕРіРѕ С‡РёСЃР»Р° РЅР° 10^k
+ * \param k СЃС‚РµРїРµРЅСЊ 10
+ * \authors РђРЅРґСЂРµР№
+ * \return vln РїРѕР»СѓС‡РµРЅРЅРѕРµ С‡РёСЃР»Рѕ
  */
 vln vln::mulk(long long k)       //N7
 {   for (long long i=0; i<k; i++)
@@ -112,20 +112,20 @@ vln vln::mulk(long long k)       //N7
     return *this;
 }
 
-/** \brief Делит на число, умноженное на k
- * \details Вычитание из натурального другого натурального, умноженного на цифру для случая с неотрицательным результатом
- * \param k long long - множитель натурального
- * \param secval const vln& - длинное натуральное число
- * \return vln разность между нашим числом и secval*k
- * \authors Андрей
+/** \brief Р”РµР»РёС‚ РЅР° С‡РёСЃР»Рѕ, СѓРјРЅРѕР¶РµРЅРЅРѕРµ РЅР° k
+ * \details Р’С‹С‡РёС‚Р°РЅРёРµ РёР· РЅР°С‚СѓСЂР°Р»СЊРЅРѕРіРѕ РґСЂСѓРіРѕРіРѕ РЅР°С‚СѓСЂР°Р»СЊРЅРѕРіРѕ, СѓРјРЅРѕР¶РµРЅРЅРѕРіРѕ РЅР° С†РёС„СЂСѓ РґР»СЏ СЃР»СѓС‡Р°СЏ СЃ РЅРµРѕС‚СЂРёС†Р°С‚РµР»СЊРЅС‹Рј СЂРµР·СѓР»СЊС‚Р°С‚РѕРј
+ * \param k long long - РјРЅРѕР¶РёС‚РµР»СЊ РЅР°С‚СѓСЂР°Р»СЊРЅРѕРіРѕ
+ * \param secval const vln& - РґР»РёРЅРЅРѕРµ РЅР°С‚СѓСЂР°Р»СЊРЅРѕРµ С‡РёСЃР»Рѕ
+ * \return vln СЂР°Р·РЅРѕСЃС‚СЊ РјРµР¶РґСѓ РЅР°С€РёРј С‡РёСЃР»РѕРј Рё secval*k
+ * \authors РђРЅРґСЂРµР№
  */
 vln vln::sub(long long k, const vln& secval) { return (this-(secval*k)); }
 
-/** \brief Старшая цифра деления двух чисел
- * \details Вычисление первой цифры деления большего натурального на меньшее, домноженное на 10^k,где k - номер позиции этой цифры (номер считается с нуля)
- * \authors Андрей
- * \param secval const vln& делитель
- * \return vln первая цифра деления домноженная на 10^k,
+/** \brief РЎС‚Р°СЂС€Р°СЏ С†РёС„СЂР° РґРµР»РµРЅРёСЏ РґРІСѓС… С‡РёСЃРµР»
+ * \details Р’С‹С‡РёСЃР»РµРЅРёРµ РїРµСЂРІРѕР№ С†РёС„СЂС‹ РґРµР»РµРЅРёСЏ Р±РѕР»СЊС€РµРіРѕ РЅР°С‚СѓСЂР°Р»СЊРЅРѕРіРѕ РЅР° РјРµРЅСЊС€РµРµ, РґРѕРјРЅРѕР¶РµРЅРЅРѕРµ РЅР° 10^k,РіРґРµ k - РЅРѕРјРµСЂ РїРѕР·РёС†РёРё СЌС‚РѕР№ С†РёС„СЂС‹ (РЅРѕРјРµСЂ СЃС‡РёС‚Р°РµС‚СЃСЏ СЃ РЅСѓР»СЏ)
+ * \authors РђРЅРґСЂРµР№
+ * \param secval const vln& РґРµР»РёС‚РµР»СЊ
+ * \return vln РїРµСЂРІР°СЏ С†РёС„СЂР° РґРµР»РµРЅРёСЏ РґРѕРјРЅРѕР¶РµРЅРЅР°СЏ РЅР° 10^k,
  */
 vln vln::div(const vln& secval)
 {   *this=*this/secval;
@@ -138,12 +138,12 @@ vln vln::div(const vln& secval)
     return (*this%k);
 }  //*N10
 
-/** \brief Вывод в поток
- * \details Выводит указанное длинное натуральное число в указанный поток
- * \authors Артём
- * \param out std::ostream& поток для вывода
- * \param secval const vln& выводимое число
- * \return std::ostream& поток с числом в нём
+/** \brief Р’С‹РІРѕРґ РІ РїРѕС‚РѕРє
+ * \details Р’С‹РІРѕРґРёС‚ СѓРєР°Р·Р°РЅРЅРѕРµ РґР»РёРЅРЅРѕРµ РЅР°С‚СѓСЂР°Р»СЊРЅРѕРµ С‡РёСЃР»Рѕ РІ СѓРєР°Р·Р°РЅРЅС‹Р№ РїРѕС‚РѕРє
+ * \authors РђСЂС‚С‘Рј
+ * \param out std::ostream& РїРѕС‚РѕРє РґР»СЏ РІС‹РІРѕРґР°
+ * \param secval const vln& РІС‹РІРѕРґРёРјРѕРµ С‡РёСЃР»Рѕ
+ * \return std::ostream& РїРѕС‚РѕРє СЃ С‡РёСЃР»РѕРј РІ РЅС‘Рј
  */
 std::ostream& operator<< (std::ostream& out, const vln& val) {
 	out << val.num;
