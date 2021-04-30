@@ -183,7 +183,7 @@ polinom<IND, COEF> operator *(polinom<IND, COEF>& l_val, polinom<IND, COEF>& r_v
 		3) заполняем векторы коэффициентов со смещением на минимальную степень. 
 		4) выделяем 2^(n+1) мест под значения полиномов
 		5) применяем алгоритм БПФ
-		6) в res записываем реальную часть от коэффициентов
+		6) в res записываем вещественную часть от коэффициентов
 		7) Возвращаем вектор новых коэффициентов и степеней
 		*/
 		int value = 0;
@@ -200,15 +200,15 @@ polinom<IND, COEF> operator *(polinom<IND, COEF>& l_val, polinom<IND, COEF>& r_v
 		size_t n = 1;
 		while (n < std::max(fr.size(), fl.size())) n <<= 1;
 		n <<= 1;
-		fr.resize(n, value); fl.resize(n); // даем места под 2^(max(fr.size(), fl.size())+1) коэффициентов
+		fr.resize(n, value); fl.resize(n); 
 		fft(fr, false);
 		fft(fl, false);
-		for (size_t i = 0; i < n; i++) fr[i] *= fl[i]; // перемножаем то, что наполучали прямым преобразованием Фурье
+		for (size_t i = 0; i < n; i++) fr[i] *= fl[i]; 
 		fft(fr, true); 
 		result.resize(n);
 		std::vector<long double> res;
 		res.resize(n);
-		for (size_t i = 0; i < n; i++) res[i] = double(fr[i].real());//берем вещественную часть от каждого коэффициента
+		for (size_t i = 0; i < n; i++) res[i] = double(fr[i].real());
 		std::vector<IND> newind;
 		std::map<IND, COEF> newcoef;
 		int vinos = *minorl + (*minorr);
