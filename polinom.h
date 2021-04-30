@@ -43,13 +43,14 @@ public:
 	template <class IND, class COEF> friend polinom<IND, COEF> integral(polinom<IND, COEF>& val, COEF& C);
 	template <class IND, class COEF> friend std::ostream& operator<< (std::ostream&, polinom<IND, COEF>&);
 };
+/*Вычисление интеграла*/
 template <class IND, class COEF> 
 COEF integral(polinom<IND, COEF>& pol, COEF& l_val, COEF& r_val)
 {
 	polinom<IND, COEF> F = integral(pol, l_val);
 	return (substitution(F, r_val) - substitution(F, l_val));
 }
-
+/*Бинарное возведение в степень*/
 template <typename IND, typename COEF> 
 COEF power1(COEF key, IND ind)
 {
@@ -73,6 +74,7 @@ COEF power1(COEF key, IND ind)
 	}
 	return ans;
 }
+// подстановка значений в полином
 template <typename IND, typename COEF>
 COEF substitution(polinom<IND, COEF>& val, COEF& x)
 {
@@ -80,7 +82,7 @@ COEF substitution(polinom<IND, COEF>& val, COEF& x)
 	for (const IND& to : val.ind) sum = sum + val.coef[to] * power1(x, to);
 	return sum;
 }
-
+// Слияние двух отсортированных векторов, возвращающее отсортированный вектор за линейное время
 template <typename IND>
 std::vector<IND> merge(const std::vector<IND>& l_val, const std::vector<IND>& r_val)
 {
@@ -98,7 +100,7 @@ std::vector<IND> merge(const std::vector<IND>& l_val, const std::vector<IND>& r_
 	return ans;
 }
 
-
+// унарный минус
 template <class IND, class COEF> 
 polinom<IND, COEF> operator -(polinom<IND, COEF>& val)
 {
@@ -106,7 +108,7 @@ polinom<IND, COEF> operator -(polinom<IND, COEF>& val)
 	for (const auto& to : val.ind) new_coef[to] = -val.coef[to];
 	return polinom<IND, COEF>(val.ind, new_coef);
 }
-
+// вычитание полиномов
 template <typename IND, typename COEF>
 polinom<IND, COEF> operator -(polinom<IND, COEF>& l_val, polinom<IND, COEF>& r_val)
 {
@@ -118,7 +120,7 @@ polinom<IND, COEF> operator -(polinom<IND, COEF>& l_val, polinom<IND, COEF>& r_v
 	new_ind.resize(l);
 	return polinom<IND, COEF>(new_ind, new_coef);
 }
-
+// сложение многочленов
 template <typename IND, typename COEF>
 polinom<IND, COEF> operator +(polinom<IND, COEF>& l_val, polinom<IND, COEF>& r_val)
 {
@@ -130,7 +132,7 @@ polinom<IND, COEF> operator +(polinom<IND, COEF>& l_val, polinom<IND, COEF>& r_v
 	new_ind.resize(l);
 	return polinom<IND, COEF>(new_ind, new_coef);
 }
-
+// оператор вывода
 template <typename IND, typename COEF>
 std::ostream& operator<< (std::ostream& out, polinom<IND, COEF>& val)
 {
@@ -151,11 +153,12 @@ std::ostream& operator<< (std::ostream& out, polinom<IND, COEF>& val)
 	}
 	return out;
 }
-
+// умножение полиномов
 template <typename IND, typename COEF> 
 polinom<IND, COEF> operator *(polinom<IND, COEF>& l_val, polinom<IND, COEF>& r_val)
 {
 	COEF comp = std::max(l_val.ind[l_val.ind.size() - 1], r_val.ind[r_val.ind.size() - 1]);
+	/* умножение полиномов степени большей чем 1000000. Стандартное умножение "в столбик"*/
 	if (comp * sizeof(COEF) > static_cast<long long>(1 << 30))
 	{
 		std::vector<IND> new_ind;
@@ -223,7 +226,8 @@ polinom<IND, COEF> operator *(polinom<IND, COEF>& l_val, polinom<IND, COEF>& r_v
 		return polinom<IND, COEF>(newind, newcoef);	
 	}
 }
-
+// деление полиномов
+//реализовано через умножение
 template <typename IND, typename COEF>
 polinom<IND, COEF> operator /(polinom<IND, COEF>& l_val, polinom<IND, COEF>& r_val)
 {
@@ -244,7 +248,7 @@ polinom<IND, COEF> operator /(polinom<IND, COEF>& l_val, polinom<IND, COEF>& r_v
 	for (int i = 0, n = new_ind.size(); i < n / 2; i++) std::swap(new_ind[i], new_ind[n - i - 1]);
 	return polinom<IND, COEF>(new_ind, new_coef);
 }
-
+// производная
 template <typename IND, typename COEF>
 polinom<IND, COEF> derivative(polinom<IND, COEF>& val)
 {
@@ -258,7 +262,7 @@ polinom<IND, COEF> derivative(polinom<IND, COEF>& val)
 	return polinom<IND, COEF>(new_ind, new_coef);
 }
 
-
+// интеграл
 template <typename IND, typename COEF> 
 polinom<IND, COEF> integral(polinom<IND, COEF>& val, COEF& C)
 {
@@ -276,7 +280,7 @@ polinom<IND, COEF> integral(polinom<IND, COEF>& val, COEF& C)
 	}
 	return polinom<IND, COEF>(new_ind, new_coef);
 }
-
+// остаток от деления
 template <typename IND, typename COEF> 
 polinom<IND, COEF> operator %(polinom<IND, COEF>& l_val, polinom<IND, COEF>& r_val)
 {
