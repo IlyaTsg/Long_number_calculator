@@ -56,6 +56,18 @@ class rational
 			red(res);
 			return res;
 		}
+	
+		template <class T> friend rational<T> operator -(const rational<T>& lval, const rational<T>& rval) {
+			rational<T> res;
+			rational<T> rv = rval;
+			rational<T> lv = lval;
+			comden(rv, lv);
+			res.num = rv.num - lv.num;
+			res.den = rv.den;
+			red(res);
+			return res;
+		}
+	
 		//template <class T> friend rational<T> operator %(const rational<T>& lval, const rational<T>& rval);
 		template <class T> friend rational<T> operator *(const rational<T>& lval, const rational<T>& rval) {
 			rational<T> res;
