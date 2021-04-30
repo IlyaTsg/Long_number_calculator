@@ -176,6 +176,16 @@ polinom<IND, COEF> operator *(polinom<IND, COEF>& l_val, polinom<IND, COEF>& r_v
 	}
 	else 
 	{
+		/*
+		умножение полиномов степени выше 1000000
+		1) Находим минимальные и максимальные элементы у полиномов;
+		2) Изменяем размер векторов
+		3) заполняем векторы коэффициентов со смещением на минимальную степень. 
+		4) выделяем 2^(n+1) мест под значения полиномов
+		5) применяем алгоритм БПФ
+		6) в res записываем реальную часть от коэффициентов
+		7) Возвращаем вектор новых коэффициентов и степеней
+		*/
 		int value = 0;
 		auto minorl = std::min_element(l_val.ind.begin(), l_val.ind.end());
 		auto minorr = std::min_element(r_val.ind.begin(), r_val.ind.end());
@@ -208,7 +218,6 @@ polinom<IND, COEF> operator *(polinom<IND, COEF>& l_val, polinom<IND, COEF>& r_v
 			{
 				newind.push_back(i + vinos);
 				newcoef[i + vinos] = res[i];
-				std::cout << "LoX\n";
 			}
 		}
 		return polinom<IND, COEF>(newind, newcoef);	
