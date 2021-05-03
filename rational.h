@@ -4,7 +4,7 @@
 #include <string>
 #include <complex>
 
-//Турушев Тимур 0306
+//Г’ГіГ°ГіГёГҐГў Г’ГЁГ¬ГіГ° 0306
 template <class T>
 class rational
 {
@@ -20,7 +20,7 @@ class rational
 		T getNum() { return num; }
 		T getDen() { return den; }
 		friend bool isnum(rational<T> val) { return (val.den == 1); }
-//Шкода Мария 0306
+//ГГЄГ®Г¤Г  ГЊГ Г°ГЁГї 0306
 		friend bool operator ==(const rational<T>& lv, const rational<T>& rv) { return (lv.num == rv.num && lv.den == rv.den); }
 		template <class type> friend bool operator ==(const rational<T>& lv, const type& rv) { return (lv == rational<T>(rv)); }
 		template <class type> friend bool operator ==(const type& lv, const rational<T>& rv) { return (rational<T>(lv) == rv); }
@@ -80,7 +80,7 @@ class rational
 			red(res);
 			return res;
 		}
-//Турушев Тимур 0306
+//Г’ГіГ°ГіГёГҐГў Г’ГЁГ¬ГіГ° 0306
 		friend std::ostream& operator<< (std::ostream& out, rational<T>& val) {
 			out << val.num;
 			out << "/" << val.den;
@@ -102,16 +102,19 @@ class rational
 				to.num = -to.num;
 			}
 		}
-//Шкода Мария 0306
+//ГГЄГ®Г¤Г  ГЊГ Г°ГЁГї 0306
 		//Reduction to a common denominator
-		void static comden(rational<T>& lval, rational<T>& rval) {
+		void static comden(rational<T>& lval, rational<T>& rval) 
+		{
 			T cden = lcm(lval.den, rval.den);
 			lval.num = lval.num * (cden / lval.den);
 			rval.num = rval.num * (cden / rval.den);
 			lval.den = cden;
 			rval.den = cden;
 		}
-		template <class T> friend rational<T> operator -(const rational<T>& lval, const rational<T>& rval) {
+	
+		friend rational<T> operator -(const rational<T>& lval, const rational<T>& rval) 
+		{
 			rational<T> res;
 			rational<T> rv = rval;
 			rational<T> lv = lval;
@@ -122,11 +125,12 @@ class rational
 			return res;
 		}
 };
-//Турушев Тимур 0306
+//Г’ГіГ°ГіГёГҐГў Г’ГЁГ¬ГіГ° 0306
 ////Ctor specializations
 typedef rational<ll> rational_ll;
 ////String rat format - "(sign)num/den"
-rational_ll::rational(std::string rat) {
+rational_ll::rational(std::string rat) 
+{
 	std::string nuM;
 	std::string deN;
 	long long i = rat[0] == '-' ? 1 : 0;
