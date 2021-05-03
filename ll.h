@@ -1,10 +1,5 @@
 #pragma once
-#include <iostream>
-#include <vector>
-#include <string>
-#include <complex>
-#include <map>
-#include <algorithm>
+#include "Errors.h"
 
 
 void flush(std::vector<long long>& g)
