@@ -4,6 +4,8 @@
 #include <string>
 #include <complex>
 #include <map>
+#include <algorithm>
+
 
 void flush(std::vector<long long>& g)
 {
@@ -35,6 +37,7 @@ public:
 
     std::vector<long long> getVec() { return num; }
     bool getSign() { return sign; }
+	void setSign(bool val) { sign = val; }
 
     ll operator -() const { return ll((!(num.size() == 1 && num[0] == 0) - sign), num); }
 
@@ -248,96 +251,31 @@ void fft(std::vector<std::complex<long double>>& to, bool invert)
 }
 
 ll operator+(const ll& lval, const ll& rval) {
-    // creating ll instance with empty vector, because default constructor creates vector with 0 element within
-    ll result(0, std::vector<long long>{});
-    long long minsize = std::min(lval.num.size(), rval.num.size());
-    long long maxsize = std::max(lval.num.size(), rval.num.size());
-    /*
-    * after addition of two elements programm adds first 9 elements to resultant vector and divides sum by 10^9 for sake of overflow tracing,
-    *because if overflow happens this division's result would be 1, which we will add to next element, otherwise this division's result would be 0
-    */
-    if (lval.sign == rval.sign) 
-    {
-        long long sum = 0;
-        for (int i = 0; i < minsize; i++) 
-        {
-            sum += lval.num[i] + rval.num[i];
-            result.num.push_back(sum % power::mod);
-            sum /= power::mod;
-        }
-        //addition of remainding larger vector's elemenets, which weren't involved in addition.
-        if (lval.num.size() > rval.num.size()) 
-        {
-            for (int i = minsize; i < maxsize; i++) 
-            {
-                sum += lval.num[i];
-                result.num.push_back(sum % power::mod);
-                sum /= power::mod;
-            }
-        }
-        else if (lval.num.size() < rval.num.size()) 
-        {
-            for (int i = minsize; i < maxsize; i++) 
-            {
-                sum += rval.num[i];
-                result.num.push_back(sum % power::mod);
-                sum /= power::mod;
-            }
-        }
-        //if after all those calculations programm got left 1, programm adds this 1 to next new rank
-        if (sum) result.num.push_back(1);
-        result.sign = lval.sign;
-    }//if the signs of operands don't match, programm calculate substraction.
-    else 
-    {
-        long long sub = 0;
-        //choosing from which ll instance we substract another one
-        if (lval == -rval) result = ll();
-        else if (lval.abs() >= rval.abs())
-        {
-            for (int i = 0; i < minsize; i++)
-            {
-                sub = power::mod * static_cast<long long>(lval.num[i] < rval.num[i] + sub) + lval.num[i] - rval.num[i] - sub;
-                result.num.push_back(sub);
-                //check for borrowing 1 from higher rank
-                sub = ((lval.num[i] < rval.num[i] + sub) ? 1 : 0);
-            }
-        }
-        else 
-        {
-            for (int i = 0; i < minsize; i++) 
-            {
-                sub = power::mod * static_cast<long long>(rval.num[i] < lval.num[i] + sub) + rval.num[i] - lval.num[i] - sub;
-                result.num.push_back(sub);
-                //check for borrowing 1 from higher rank
-                sub = (rval.num[i] < lval.num[i] + sub) ? 1 : 0;
-            }
-            //addition of remainding larger vector's elemenets, which weren't involved in addition, and if necessary we borrow 1 form higher ranks
-        }
-        if (lval.abs() >= rval.abs())
-        {
-            for (int i = minsize; i < maxsize; i++) 
-            {
-                sub = power::mod * (lval.num[i] < sub) + lval.num[i] - sub;
-                if (sub > lval.num[i]) sub = 1;
-                result.num.push_back(sub);
-            }
-        }
-        else 
-        {
-            for (int i = minsize; i < maxsize; i++) 
-            {
-                sub = power::mod * (rval.num[i] < sub) + rval.num[i] - sub;
-                if (sub > rval.num[i]) sub = 1;
-                result.num.push_back(sub);
-            }
-        }
-        //deleting insignificant 0 from end of vector
-        if (result.num.size() > 1 && result.num[result.num.size() - 1] == 0) result.num.pop_back();
-        result.sign = ((lval.abs() >= rval.abs()) ? lval.sign : rval.sign);
-    }
-    flush(result.num);
-    return result;
+	std::vector<long long> lvec = lval.num;
+	std::vector<long long> rvec = rval.num;
+	lvec.size() > rvec.size() ? rvec.resize(lvec.size(), 0) : lvec.resize(rvec.size(), 0);
+	ll result(0, std::vector<long long>(lvec.size() + 1, 0));
+	if (lval.abs() < rval.abs()) std::swap(lvec, rvec);
+	bool sf = rval.sign != lval.sign;//Sign Flag
+	bool lf; //Less than Flag
+	for (int i = 0; i < lvec.size(); i++) {
+		lf = (lvec[i] < rvec[i]);
+// "(1 - 2*static_cast<long long>(sf)) * rvec[i]" statement is responsible for checking type of operation, i.e.
+//  substraction or addition. If sf = 1 (i.e. signs of operands aren't equal) programm calclulate this statement to 1-2 = -1, and so
+//	we got minus sign for rvec[i]
+//	"power::mod*sf*lf + lvec[i]" statement is responsible for borrowing 1 from higher rank. If sf = 1 (substraction) and lf = 1 (substraction from 
+//	lesser element) than we multiply it b 10^9 (borrowing 1 from higher rank)
+		result.num[i] += power::mod*sf*lf + lvec[i] + (1 - 2*static_cast<long long>(sf)) * rvec[i];
+		lf = (lvec[i] < result.num[i]);
+//	This block is responsible for borrowing from higher rank in case of substraction or for addition 1 to higher rank in case of addition.
+//	"(result.num[i] / power::mod)" statement gives us 1 if we got more than 9 digits, and 0 if less than 9 digits (that's check for addition overflow).
+//	"(lf && sf)" statement if sf = 1 (substraction operation) and lf (substraction from lesser element) gives us -1 (that's check for borrowing from higher ranks)
+		result.num[i + 1] += (result.num[i] / power::mod) - (lf && sf);
+		result.num[i] %= power::mod;
+	}
+	result.sign = sf * (lval.abs() < rval.abs()) ? rval.sign : lval.sign;
+	flush(result.num);
+	return result;
 }
 
 ll operator *(const ll& lval, const ll& rval)
