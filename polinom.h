@@ -1,9 +1,5 @@
 #pragma once
-#include <iostream>
-#include <algorithm>
-#include <vector>
-#include <string>
-#include <map>
+#include "Errors.h"
 
 template <typename COEF>
 long long intstr(std::string str, int i = 0)
