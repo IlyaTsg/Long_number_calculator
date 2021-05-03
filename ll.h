@@ -30,9 +30,10 @@ public:
     ll(long long to);
     ll(std::string to);
 
+    void NaN_to_NULL() { if (num.size() == 1 && num[0] == 0) sign = 0; }      //Замена значения NaN на обыкновенный 0
     std::vector<long long> getVec() { return num; }
     bool getSign() { return sign; }
-	void setSign(bool val) { sign = val; }
+    void setSign(bool val) { sign = val; }
 
     ll operator -() const { return ll((!(num.size() == 1 && num[0] == 0) - sign), num); }
 
@@ -51,7 +52,7 @@ public:
     friend bool operator !=(const ll& lval, const ll& rval) { return !(lval == rval); }
     template <typename T> friend bool operator !=(const T& lval, const ll& rval) { return (ll(lval) != rval); }
     template <typename T> friend bool operator !=(const ll& lval, const T& rval) { return (lval != ll(rval)); }
-    
+
     friend bool operator >=(const ll& lval, const ll& rval) { return !(lval < rval); }
     template <typename T> friend bool operator >=(const T& lval, const ll& rval) { return !(ll(lval) < rval); }
     template <typename T> friend bool operator >=(const ll& lval, const T& rval) { return !(lval < ll(rval)); }
@@ -129,7 +130,7 @@ bool operator >(const ll& lval, const ll& rval)
 long long operator %(const ll& l_val, int r_val)
 {
     long long sum = 0;
-    for (long long i = 0, n = l_val.num.size() , p = 1; i < n; i++)
+    for (long long i = 0, n = l_val.num.size(), p = 1; i < n; i++)
     {
         sum = (sum + l_val.num[i] * p) % r_val;
         p = p * power::mod % r_val;
@@ -179,7 +180,7 @@ ll operator *(const ll& lval, int rval)
     return ll(new_sign, tmp);
 }
 
-bool operator ==(const ll& lval, const ll& rval) 
+bool operator ==(const ll& lval, const ll& rval)
 {
     int len1 = lval.num.size();
     if (len1 != rval.num.size() || lval.sign != rval.sign) return false; // íå ðàâíû
@@ -213,7 +214,7 @@ std::ostream& operator<< (std::ostream& out, const ll& val)
             for (long long x = val.num[i]; x > 0; x /= 10, h++);
             for (int j = 0; j < 9 - h; j++) out << '0';
         }
-        if(val.num[i] != 0) out << val.num[i];
+        if (val.num[i] != 0) out << val.num[i];
     }
     return out;
 }
@@ -246,31 +247,31 @@ void fft(std::vector<std::complex<long double>>& to, bool invert)
 }
 
 ll operator+(const ll& lval, const ll& rval) {
-	std::vector<long long> lvec = lval.num;
-	std::vector<long long> rvec = rval.num;
-	lvec.size() > rvec.size() ? rvec.resize(lvec.size(), 0) : lvec.resize(rvec.size(), 0);
-	ll result(0, std::vector<long long>(lvec.size() + 1, 0));
-	if (lval.abs() < rval.abs()) std::swap(lvec, rvec);
-	bool sf = rval.sign != lval.sign;//Sign Flag
-	bool lf; //Less than Flag
-	for (int i = 0; i < lvec.size(); i++) {
-		lf = (lvec[i] < rvec[i]);
-// "(1 - 2*static_cast<long long>(sf)) * rvec[i]" statement is responsible for checking type of operation, i.e.
-//  substraction or addition. If sf = 1 (i.e. signs of operands aren't equal) programm calclulate this statement to 1-2 = -1, and so
-//	we got minus sign for rvec[i]
-//	"power::mod*sf*lf + lvec[i]" statement is responsible for borrowing 1 from higher rank. If sf = 1 (substraction) and lf = 1 (substraction from 
-//	lesser element) than we multiply it b 10^9 (borrowing 1 from higher rank)
-		result.num[i] += power::mod*sf*lf + lvec[i] + (1 - 2*static_cast<long long>(sf)) * rvec[i];
-		lf = (lvec[i] < result.num[i]);
-//	This block is responsible for borrowing from higher rank in case of substraction or for addition 1 to higher rank in case of addition.
-//	"(result.num[i] / power::mod)" statement gives us 1 if we got more than 9 digits, and 0 if less than 9 digits (that's check for addition overflow).
-//	"(lf && sf)" statement if sf = 1 (substraction operation) and lf (substraction from lesser element) gives us -1 (that's check for borrowing from higher ranks)
-		result.num[i + 1] += (result.num[i] / power::mod) - (lf && sf);
-		result.num[i] %= power::mod;
-	}
-	result.sign = sf * (lval.abs() < rval.abs()) ? rval.sign : lval.sign;
-	flush(result.num);
-	return result;
+    std::vector<long long> lvec = lval.num;
+    std::vector<long long> rvec = rval.num;
+    lvec.size() > rvec.size() ? rvec.resize(lvec.size(), 0) : lvec.resize(rvec.size(), 0);
+    ll result(0, std::vector<long long>(lvec.size() + 1, 0));
+    if (lval.abs() < rval.abs()) std::swap(lvec, rvec);
+    bool sf = rval.sign != lval.sign;//Sign Flag
+    bool lf; //Less than Flag
+    for (int i = 0; i < lvec.size(); i++) {
+        lf = (lvec[i] < rvec[i]);
+        // "(1 - 2*static_cast<long long>(sf)) * rvec[i]" statement is responsible for checking type of operation, i.e.
+        //  substraction or addition. If sf = 1 (i.e. signs of operands aren't equal) programm calclulate this statement to 1-2 = -1, and so
+        //	we got minus sign for rvec[i]
+        //	"power::mod*sf*lf + lvec[i]" statement is responsible for borrowing 1 from higher rank. If sf = 1 (substraction) and lf = 1 (substraction from 
+        //	lesser element) than we multiply it b 10^9 (borrowing 1 from higher rank)
+        result.num[i] += power::mod * sf * lf + lvec[i] + (1 - 2 * static_cast<long long>(sf)) * rvec[i];
+        lf = (lvec[i] < result.num[i]);
+        //	This block is responsible for borrowing from higher rank in case of substraction or for addition 1 to higher rank in case of addition.
+        //	"(result.num[i] / power::mod)" statement gives us 1 if we got more than 9 digits, and 0 if less than 9 digits (that's check for addition overflow).
+        //	"(lf && sf)" statement if sf = 1 (substraction operation) and lf (substraction from lesser element) gives us -1 (that's check for borrowing from higher ranks)
+        result.num[i + 1] += (result.num[i] / power::mod) - (lf && sf);
+        result.num[i] %= power::mod;
+    }
+    result.sign = sf * (lval.abs() < rval.abs()) ? rval.sign : lval.sign;
+    flush(result.num);
+    return result;
 }
 
 ll operator *(const ll& lval, const ll& rval)
@@ -331,12 +332,12 @@ ll::ll(long long to) : sign{ to < 0 } {
     num.push_back(to / power::mod);
     flush(num);
 }
-ll::ll(std::string to) 
+ll::ll(std::string to)
 {
     int digit = 0, degree = 1;
     sign = (to[0] == '-');
     if (sign) to.erase(0, 1);
-    for (int len = to.length(), i = len - 1; i >= 0; i--) 
+    for (int len = to.length(), i = len - 1; i >= 0; i--)
     {
         while (i && to[i] == static_cast<char>(39))
         {
@@ -345,7 +346,7 @@ ll::ll(std::string to)
             len--;
         }        digit = digit + (static_cast<long long>(to[i]) - 48) * degree;
         degree *= 10;
-        if (!((len - i) % 9) || !i) 
+        if (!((len - i) % 9) || !i)
         {
             num.push_back(digit);
             digit = 0;
@@ -367,8 +368,8 @@ ll divby2(ll val)
     //std::cout << val.num.size() << std::endl;
     for (int i = 0, n = val.num.size(); i < n; i++)
     {
-        if(!(i == n - 1 && val.num[i] < 2)) new_val.push_back(val.num[i] / 2);
-        if(i) new_val[i - 1] = new_val[i - 1] + val.num[i] % 2 * (power::mod / 2);
+        if (!(i == n - 1 && val.num[i] < 2)) new_val.push_back(val.num[i] / 2);
+        if (i) new_val[i - 1] = new_val[i - 1] + val.num[i] % 2 * (power::mod / 2);
         //std::cout << new_val[i] << std::endl;
     }
     flush(new_val);
@@ -393,12 +394,17 @@ ll operator /(const ll& lval, const ll& rval)
     return l;
 }
 
-ll operator %(const ll& lval, const ll& rval) { return lval - lval / rval * rval;  }
+ll operator %(const ll& lval, const ll& rval) 
+{
+    ll ans = lval - lval / rval * rval;
+    ans.NaN_to_NULL();
+    return ans;
+}
 //The repair is over
 
 // Илья Цыганков гр. 0306
 template <class Type>
-Type gcd(Type a, Type b) { return (b==0 ? a:gcd(b, a%b)); }
+Type gcd(Type a, Type b) { return (b == 0 ? a : gcd(b, a % b)); }
 
 // Илья Цыганков гр. 0306
 template <class Type>
@@ -408,7 +414,7 @@ Type lcm(Type a, Type b) { return a / gcd(a, b) * b; }
 ll fact(int digit)
 {
     ll tmp = 1;
-    for(int i = 2; i <= digit; i++) tmp = tmp * i;
+    for (int i = 2; i <= digit; i++) tmp = tmp * i;
     return tmp;
 }
 
