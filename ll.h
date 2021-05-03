@@ -421,20 +421,14 @@ ll fact(int digit)
 ll fib(int digit)
 {
     static std::map<long long, ll> fibm;
-    if(fibm[digit] == 0){
-        fibm[0]=0;
-        fibm[1]=1;
-        fibm[2]=1;
-        fibm[3]=2;
-        if(digit < 4) return fibm[digit];
-        else if(digit%2){
-            fibm[digit] = fib((digit-1)/2 + 1)*fib((digit-1)/2 + 2) - fib((digit-1)/2)*fib((digit-1)/2 - 1);
-            return fibm[digit];
-        }
-        else{
-            fibm[digit] = fib(digit/2)*(fib(digit/2-1) + fib(digit/2+1));
-            return fibm[digit];
-        }   
+    if (fibm[digit] == 0) {
+        fibm[0] = 0;
+        fibm[1] = 1;
+        fibm[2] = 1;
+        fibm[3] = 2;
+        if (digit < 4) return fibm[digit];
+        else if (digit % 2) fibm[digit] = fib((digit - 1) / 2 + 1) * fib((digit - 1) / 2 + 2) - fib((digit - 1) / 2) * fib((digit - 1) / 2 - 1);
+        else fibm[digit] = fib(digit / 2) * (fib(digit / 2 - 1) + fib(digit / 2 + 1));
     }
-    else return fibm[digit];
+    return fibm[digit];
 }
