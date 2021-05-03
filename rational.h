@@ -1,8 +1,5 @@
 #pragma once
-#include <iostream>
-#include <vector>
-#include <string>
-#include <complex>
+#include "Errors.h"
 
 //Òóðóøåâ Òèìóð 0306
 template <class T>
