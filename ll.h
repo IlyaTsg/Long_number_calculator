@@ -20,51 +20,65 @@ int log2(long long n)
 class ll
 {
 private:
-    std::vector<long long> num;  //Âåêòîð öèôð
-    bool sign;              //0 - ïëþñ, 1 - ìèíóñ
+    std::vector<long long> num;  //Вектор цифр в 10^9-ичной системе счисления в обратном порядке
+    bool sign;              //0 - плюс, 1 - минус
 
 public:
-    ll() : sign{ false }, num({ 0 }){};
+    //Конструкторы
+    ll() : sign{ false }, num({ 0 }){};     //Пустой
+    //По знаку и значению
     ll(bool sig, std::vector<long long> nu) : sign(sig), num(nu) {}
-    ll(int to);
+
+    ll(int to);                             //По числу
     ll(long long to);
-    ll(std::string to);
+    
+    ll(std::string to);                     //По строке
+
 
     void NaN_to_NULL() { if (num.size() == 1 && num[0] == 0) sign = 0; }      //Замена значения NaN на обыкновенный 0
-    std::vector<long long> getVec() { return num; }
-    bool getSign() { return sign; }
-    void setSign(bool val) { sign = val; }
 
+    std::vector<long long> getVec() { return num; }                           //Геттеры
+    bool getSign() { return sign; }
+    
+    void setSign(bool val) { sign = val; }                                    //Сеттеры
+
+    //Унарный минус
     ll operator -() const { return ll((!(num.size() == 1 && num[0] == 0) - sign), num); }
 
+    //Операторы сравнения, реализованные сначала для собственного типа данных, затем для литералов других типов данных
     friend bool operator ==(const ll& lval, const ll& rval);
-    template<typename T> friend bool operator ==(const T& lval, const ll& rval) { return (ll(lval) == rval); }
-    template<typename T> friend bool operator ==(const ll& lval, const T& rval) { return (lval == ll(rval)); }
+    template<class T> friend bool operator ==(const T& lval, const ll& rval) { return (ll(lval) == rval); }
+    template<class T> friend bool operator ==(const ll& lval, const T& rval) { return (lval == ll(rval)); }
 
     friend bool operator > (const ll& lval, const ll& rval);
-    template <typename T> friend bool operator > (const T& lval, const ll& rval) { return (ll(lval) > rval); }
-    template <typename T> friend bool operator > (const ll& lval, const T& rval) { return (lval > ll(rval)); }
+    template <class T> friend bool operator > (const T& lval, const ll& rval) { return (ll(lval) > rval); }
+    template <class T> friend bool operator > (const ll& lval, const T& rval) { return (lval > ll(rval)); }
 
     friend bool operator < (const ll& lval, const ll& rval) { return rval > lval; }
-    template <typename T> friend bool operator < (const ll& lval, const T& rval) { return (lval < ll(rval)); }
-    template <typename T> friend bool operator < (const T& lval, const ll& rval) { return (ll(lval) < rval); }
+    template <class T> friend bool operator < (const ll& lval, const T& rval) { return (lval < ll(rval)); }
+    template <class T> friend bool operator < (const T& lval, const ll& rval) { return (ll(lval) < rval); }
 
     friend bool operator !=(const ll& lval, const ll& rval) { return !(lval == rval); }
-    template <typename T> friend bool operator !=(const T& lval, const ll& rval) { return (ll(lval) != rval); }
-    template <typename T> friend bool operator !=(const ll& lval, const T& rval) { return (lval != ll(rval)); }
+    template <class T> friend bool operator !=(const T& lval, const ll& rval) { return (ll(lval) != rval); }
+    template <class T> friend bool operator !=(const ll& lval, const T& rval) { return (lval != ll(rval)); }
 
     friend bool operator >=(const ll& lval, const ll& rval) { return !(lval < rval); }
-    template <typename T> friend bool operator >=(const T& lval, const ll& rval) { return !(ll(lval) < rval); }
-    template <typename T> friend bool operator >=(const ll& lval, const T& rval) { return !(lval < ll(rval)); }
+    template <class T> friend bool operator >=(const T& lval, const ll& rval) { return !(ll(lval) < rval); }
+    template <class T> friend bool operator >=(const ll& lval, const T& rval) { return !(lval < ll(rval)); }
 
     friend bool operator <=(const ll& lval, const ll& rval) { return !(lval > rval); }
-    template <typename T> friend bool operator <=(const T& lval, const ll& rval) { return !(ll(lval) > rval); }
-    template <typename T> friend bool operator <=(const ll& lval, const T& rval) { return !(lval > ll(rval)); }
+    template <class T> friend bool operator <=(const T& lval, const ll& rval) { return !(ll(lval) > rval); }
+    template <class T> friend bool operator <=(const ll& lval, const T& rval) { return !(lval > ll(rval)); }
 
-    //friend bool operator = (ll& val) { sign = val.sign; num = val.num; }
 
     friend ll operator +(const ll& lval, const ll& rval);       //Z-6
+    template <class T> friend ll operator +(const T& lval, const ll& rval) { return ll(lval) + rval; }
+    template <class T> friend ll operator +(const ll& lval, const T& rval) { return lval + ll(rval); }
+
     friend ll operator -(const ll& lval, const ll& rval) { return (lval + (-rval)); }       //Z-7
+    template <class T> friend ll operator -(const T& lval, const ll& rval) { return ll(lval) - rval; }
+    template <class T> friend ll operator -(const ll& lval, const T& rval) { return lval - ll(rval); }
+
     friend ll operator %(const ll& lval, const ll& rval);       //Z-10
     friend long long operator %(const ll& l_val, int r_val);
     friend ll operator *(const ll& lval, const ll& rval);       //Z-8
@@ -86,12 +100,13 @@ public:
     }
 };
 
-namespace power
+namespace power         //Пространство имен для констант
 {
     const int mod = 1'000'000'000;
     const double PI = 3.141592653589793238462643383279;
 }
 
+//Перегрузка потокового ввода
 std::istream& operator>> (std::istream& in, ll& val)
 {
     std::string key;
@@ -127,6 +142,7 @@ bool operator >(const ll& lval, const ll& rval)
  * \return bool true, åñëè ëåâîå ìåíüøå ïðàâîãî, èíà÷å false
  */
 
+//Частный случай остатка от деления, для int делителя
 long long operator %(const ll& l_val, int r_val)
 {
     long long sum = 0;
@@ -138,6 +154,7 @@ long long operator %(const ll& l_val, int r_val)
     return sum % r_val;
 }
 
+//Градусные тригонометрические функции
 long double sin(ll a)
 {
     long double key = static_cast<long double>(a % 360) / 180 * power::PI;
@@ -162,6 +179,7 @@ long double ctg(ll a)
     return cos(key) / sin(key);
 }
 
+//Частный случай умножения, для int множителя, реализован столбик
 ll operator *(const ll& lval, int rval)
 {
     bool new_sign = (lval.sign ^ (rval < 0));
@@ -180,6 +198,7 @@ ll operator *(const ll& lval, int rval)
     return ll(new_sign, tmp);
 }
 
+//Поциферное сравнение двух чисел
 bool operator ==(const ll& lval, const ll& rval)
 {
     int len1 = lval.num.size();
@@ -188,12 +207,14 @@ bool operator ==(const ll& lval, const ll& rval)
     return true;
 }
 
+//Положительное/Отрицательное/Ноль число
 short ll::poz()
 {
     if (num.size() == 1 && num[0] == 0) return 0;
     return (2 - sign);
 }
 
+//Перегрузка потокового вывода
 std::ostream& operator<< (std::ostream& out, const ll& val)
 {
     std::ios_base::sync_with_stdio(false);
@@ -219,6 +240,7 @@ std::ostream& operator<< (std::ostream& out, const ll& val)
     return out;
 }
 
+//Алгоритм быстрого преобразования Фурье
 void fft(std::vector<std::complex<long double>>& to, bool invert)
 {
     int n = to.size();
@@ -246,15 +268,17 @@ void fft(std::vector<std::complex<long double>>& to, bool invert)
     }
 }
 
+
 ll operator+(const ll& lval, const ll& rval) {
     std::vector<long long> lvec = lval.num;
     std::vector<long long> rvec = rval.num;
     lvec.size() > rvec.size() ? rvec.resize(lvec.size(), 0) : lvec.resize(rvec.size(), 0);
     ll result(0, std::vector<long long>(lvec.size() + 1, 0));
     if (lval.abs() < rval.abs()) std::swap(lvec, rvec);
-    bool sf = rval.sign != lval.sign;//Sign Flag
+    bool sf = (rval.sign != lval.sign); //Sign Flag
     bool lf; //Less than Flag
-    for (int i = 0; i < lvec.size(); i++) {
+    for (int i = 0; i < lvec.size(); i++) 
+    {
         lf = (lvec[i] < rvec[i]);
         // "(1 - 2*static_cast<long long>(sf)) * rvec[i]" statement is responsible for checking type of operation, i.e.
         //  substraction or addition. If sf = 1 (i.e. signs of operands aren't equal) programm calclulate this statement to 1-2 = -1, and so
@@ -271,6 +295,7 @@ ll operator+(const ll& lval, const ll& rval) {
     }
     result.sign = sf * (lval.abs() < rval.abs()) ? rval.sign : lval.sign;
     flush(result.num);
+    result.NaN_to_NULL();
     return result;
 }
 
