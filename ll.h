@@ -438,7 +438,15 @@ ll operator %(const ll& lval, const ll& rval)
 
 // Илья Цыганков гр. 0306
 template <class Type>
-Type gcd(Type a, Type b) { return (b == 0 ? a : gcd(b, a % b)); }
+Type gcd(Type a, Type b) 
+{ 
+    if (b == 0)
+    {
+        assert(a == 0 && "Error of GCD");
+        return a;
+    }
+    return gcd(b, a % b);
+}
 
 // Илья Цыганков гр. 0306
 template <class Type>
