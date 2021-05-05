@@ -18,6 +18,7 @@ public:
 	T getNum() { return num; }
 	T getDen() { return den; }
 	friend bool isnum(rational<T> val) { return (val.den == 1); }
+	friend ll::ll(rational<T>& val);
 	//Мария Шкода 0306
 	friend bool operator ==(const rational<T>& lv, const rational<T>& rv) { return (lv.num == rv.num && lv.den == rv.den); }
 	template <class type> friend bool operator ==(const rational<T>& lv, const type& rv) { return (lv == rational<T>(rv)); }
@@ -75,6 +76,7 @@ public:
 			res.num.setSign(true);
 			res.den.setSign(false);
 		}
+		assert(res.den != 0);
 		red(res);
 		return res;
 	}
@@ -111,6 +113,7 @@ public:
 			//Reduction to a common denominator
 	void static comden(rational<T>& lval, rational<T>& rval) {
 		T cden = lcm(lval.den, rval.den);
+		assert(cden == 0);
 		lval.num = lval.num * (cden / lval.den);
 		rval.num = rval.num * (cden / rval.den);
 		lval.den = cden;
@@ -150,6 +153,14 @@ rational_ll::rational(std::string rat) {
 	den = ll(deN);
 	assert(den != 0); 
 	red(*this);
+}
+
+template <class T>
+ll::ll(rational<T>& val)
+{
+	ll ans = val.num / val.den;
+	sign = ans.sign;
+	num = ans.num;
 }
 
 //template<class IND, class COEF>
