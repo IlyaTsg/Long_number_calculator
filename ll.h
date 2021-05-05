@@ -441,8 +441,9 @@ ll operator %(const ll& lval, const ll& rval)
 
 // Илья Цыганков гр. 0306
 template <class Type>
-Type gcd(Type a, Type b) 
+Type gcd(const Type a, const Type b) 
 { 
+    std::cout << a << '\n' << b << "\n\n\n";
     if (b == 0)
     {
         assert(a != 0 && "Error of GCD");
@@ -453,7 +454,7 @@ Type gcd(Type a, Type b)
 
 // Илья Цыганков гр. 0306
 template <class Type>
-Type lcm(Type a, Type b) { return a / gcd(a, b) * b; }
+Type lcm(const Type a, const Type b) { return a / gcd(a, b) * b; }
 
 // Илья Цыганков гр. 0306
 ll fact(int digit)
