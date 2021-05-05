@@ -1,6 +1,7 @@
 #pragma once
 #include "Errors.h"
 
+template <class T> rational;
 
 void flush(std::vector<long long>& g)
 {
