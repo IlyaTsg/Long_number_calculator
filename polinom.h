@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include "ll.h"
 
 template <typename COEF>
 long long intstr(std::string str, int i = 0)
@@ -28,20 +29,20 @@ public:
 	polinom<IND, COEF>(std::vector<IND> Ind, std::vector<COEF> Coef) : ind(Ind) { for (int i = 0, n = Ind.size(); i < n; i++) coef[ind[i]] = Coef[i]; }
 	//polinom<IND, COEF>(std::string pol)
 
-	template <class IND, class COEF> friend polinom<IND, COEF> operator -(polinom<IND, COEF>&);
-	template <class IND, class COEF> friend polinom<IND, COEF> operator +(polinom<IND, COEF>&, polinom<IND, COEF>&);
-	template <class IND, class COEF> friend polinom<IND, COEF> operator -(polinom<IND, COEF>&, polinom<IND, COEF>&);
-	template <class IND, class COEF> friend polinom<IND, COEF> operator *(polinom<IND, COEF>&, polinom<IND, COEF>&);
-	template <class IND, class COEF> friend polinom<IND, COEF> operator /(polinom<IND, COEF>&, polinom<IND, COEF>&);
-	template <class IND, class COEF> friend polinom<IND, COEF> operator %(polinom<IND, COEF>&, polinom<IND, COEF>&);
+	template <class INDa, typename COEFa> friend polinom<INDa, COEFa> operator -(polinom<INDa, COEFa>&);
+	template <class INDa, class COEFa> friend polinom<INDa, COEFa> operator +(polinom<INDa, COEFa>&, polinom<INDa, COEFa>&);
+	template <class INDa, class COEFa> friend polinom<INDa, COEFa> operator -(polinom<INDa, COEFa>&, polinom<INDa, COEFa>&);
+	template <class INDa, class COEFa> friend polinom<INDa, COEFa> operator *(polinom<INDa, COEFa>&, polinom<INDa, COEFa>&);
+	template <class INDa, class COEFa> friend polinom<INDa, COEFa> operator /(polinom<INDa, COEFa>&, polinom<INDa, COEFa>&);
+	template <class INDa, class COEFa> friend polinom<INDa, COEFa> operator %(polinom<INDa, COEFa>&, polinom<INDa, COEFa>&);
 	/*std::ostream& operator>> (std::ostream& out, const polinom& val);
 	vector< complex<T> > roots();
 	friend polinom gcd(polinom l_val, polinom r_val);*/
-	template <class IND, class COEF> friend COEF substitution(polinom<IND, COEF>& val, COEF& x);
-	template <class IND, class COEF> friend COEF integral(polinom<IND, COEF>& pol, COEF& l_val, COEF& r_val);
-	template <class IND, class COEF> friend polinom<IND, COEF> derivative(polinom<IND, COEF>& val);
-	template <class IND, class COEF> friend polinom<IND, COEF> integral(polinom<IND, COEF>& val, COEF& C);
-	template <class IND, class COEF> friend std::ostream& operator<< (std::ostream&, polinom<IND, COEF>&);
+	template <class INDa, class COEFa> friend COEFa substitution(polinom<INDa, COEF>& val, COEFa& x);
+	template <class INDa, class COEFa> friend COEFa integral(polinom<INDa, COEFa>& pol, COEFa& l_val, COEFa& r_val);
+	template <class INDa, class COEFa> friend polinom<INDa, COEFa> derivative(polinom<INDa, COEFa>& val);
+	template <class INDa, class COEFa> friend polinom<INDa, COEFa> integral(polinom<INDa, COEFa>& val, COEFa& C);
+	template <class INDa, class COEFa> friend std::ostream& operator<< (std::ostream&, polinom<INDa, COEFa>&);
 };
 /*Вычисление интеграла*/
 template <class IND, class COEF> 

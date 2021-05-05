@@ -108,7 +108,7 @@ ll calculate(std::string function)
 			while(canAction(function[pos], operation)) action(digit, operation);
 			operation.push(function[pos]);
 		}
-		else{
+		else if(isdigit(function[pos])){
             std::string a = "";
             while(pos < function.length() && isdigit(function[pos])){ 
                 a += function[pos];
@@ -117,6 +117,10 @@ ll calculate(std::string function)
             pos--;
             digit.push(ll(a));
         }
+		else{
+			while(!isdigit(function[pos]) && !isoperation(function[pos]) && function[pos]!='(' && function[pos] != ')') pos++;
+			pos--;
+		}
 		pos++;
 	}while(pos<function.length());
 	if(digit.size()>1 || operation.size()>0); // Отлов ошибки(типо ввёл неправильно и т.д)
