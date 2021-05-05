@@ -145,6 +145,7 @@ bool operator >(const ll& lval, const ll& rval)
 //Частный случай остатка от деления, для int делителя
 long long operator %(const ll& l_val, int r_val)
 {
+    assert(r_val != 0);
     long long sum = 0;
     for (long long i = 0, n = l_val.num.size(), p = 1; i < n; i++)
     {
@@ -195,7 +196,9 @@ ll operator *(const ll& lval, int rval)
     }
     if (sum != 0) tmp.push_back(sum);
     flush(tmp);
-    return ll(new_sign, tmp);
+    ll ans = ll(new_sign, tmp);
+    ans.NaN_to_NULL();
+    return ans;
 }
 
 //Поциферное сравнение двух чисел
@@ -340,7 +343,9 @@ ll operator *(const ll& lval, const ll& rval)
         else ansy[i / 3] += static_cast<long long>(pow(1000, i % 3)) * ans[i];
     }
     flush(ansy);
-    return ll(lval.sign ^ rval.sign, ansy);
+    ll a = ll(lval.sign ^ rval.sign, ansy);
+    a.NaN_to_NULL();
+    return a;
 }
 
 ll::ll(int to) : sign{ to < 0 } {
@@ -403,6 +408,7 @@ ll divby2(ll val)
 
 ll operator /(const ll& lval, const ll& rval)
 {
+    assert(rval != 0);
     bool new_sign = (lval.sign ^ rval.sign);
     ll l_val = lval.abs(), r_val = rval.abs(), l, r = l_val + 1, new_val, one(1), g = r - l - 1;
     //std::cout << l << ' ' << r << std::endl;
@@ -416,11 +422,13 @@ ll operator /(const ll& lval, const ll& rval)
     }
     flush(l.num);
     l.sign = new_sign;
+    l.NaN_to_NULL();
     return l;
 }
 
 ll operator %(const ll& lval, const ll& rval) 
 {
+    assert(rval != 0);
     ll ans = lval - lval / rval * rval;
     ans.NaN_to_NULL();
     return ans;
@@ -438,6 +446,7 @@ Type lcm(Type a, Type b) { return a / gcd(a, b) * b; }
 // Илья Цыганков гр. 0306
 ll fact(int digit)
 {
+    assert(digit >= 0);
     ll tmp = 1;
     for (int i = 2; i <= digit; i++) tmp = tmp * i;
     return tmp;
@@ -446,6 +455,7 @@ ll fact(int digit)
 // Илья Цыганков гр. 0306
 ll fib(int digit)
 {
+    assert(digit >= 0);
     static std::map<long long, ll> fibm;
     if (fibm[digit] == 0) {
         fibm[0] = 0;
