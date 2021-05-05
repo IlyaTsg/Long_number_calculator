@@ -1,7 +1,8 @@
 #pragma once
 #include "Errors.h"
 
-template <class T> rational;
+template <class T> class rational;
+//template <class IND, class COEF> polinom;
 
 void flush(std::vector<long long>& g)
 {
@@ -34,6 +35,8 @@ public:
     ll(long long to);
     
     ll(std::string to);                     //По строке
+
+    template <class T> ll(rational<T>& val);
 
 
     void NaN_to_NULL() { if (num.size() == 1 && num[0] == 0) sign = 0; }      //Замена значения NaN на обыкновенный 0
@@ -211,7 +214,7 @@ bool operator ==(const ll& lval, const ll& rval)
     return true;
 }
 
-//Положительное/Отрицательное/Ноль число
+//Положительное/Отрицательное/Ноль --- число
 short ll::poz()
 {
     if (num.size() == 1 && num[0] == 0) return 0;
@@ -442,7 +445,7 @@ Type gcd(Type a, Type b)
 { 
     if (b == 0)
     {
-        assert(a == 0 && "Error of GCD");
+        assert(a != 0 && "Error of GCD");
         return a;
     }
     return gcd(b, a % b);
