@@ -14,7 +14,7 @@ public:
 	rational<T>(T num, T den) : num(num), den(den) { assert(den != 0); red(*this); }
 	rational<T>(T num) : num(num), den(T(1)) {}
 	rational(std::string rat);
-	rational<T> operator -() { num = -num; }
+	rational<T> operator -() { return rational<T>(-num, den); }
 	T getNum() { return num; }
 	T getDen() { return den; }
 	friend bool isnum(rational<T> val) { return (val.den == 1); }
@@ -79,10 +79,17 @@ public:
 		return res;
 	}
 	//Турушев Тимур 0306
-	friend std::ostream& operator<< (std::ostream& out, rational<T>& val) {
+	friend std::ostream& operator<< (std::ostream& out, const rational<T>& val) {
 		out << val.num;
 		if (val.den != 1) out << "/" << val.den;
 		return out;
+	}
+
+	friend std::istream& operator>> (std::istream& in, rational<T>& val) {
+		std::string line;
+		in >> line;
+		val = rational<T>(line);
+		return in;
 	}
 	/*friend std::ostream& operator<< (std::ostream& out, rational<polinom<> >& val) {
 		out << val.num << "/" << val.den;
@@ -134,7 +141,8 @@ rational_ll::rational(std::string rat) {
 		if (rat[i] == '/') drob++; 
 		if (!(rat[i] >= '0' && rat[i] <= '9' || rat[i] == '/' || rat[i] == '-')) rat.erase(i--, 1);
 	}
-	assert(minus <= 2 && drob == 1);
+	if (drob == 0) rat = rat + "/1";
+	assert(minus <= 2 && drob <= 1);
 	long long i = (rat[0] == '-' ? 1 : 0);
 	while (rat[i] != '/') nuM += rat[i++];
 	for (i += 1; i < rat.length(); i++) deN += rat[i];
