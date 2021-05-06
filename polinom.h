@@ -20,7 +20,7 @@ public:
 	polinom<IND, COEF>() {}
 	polinom<IND, COEF>(COEF n) 
 	{
-		if (n >= 0.0001 && n <= -0.0001)
+		if (n >= 0.0001 || n <= -0.0001)
 		{
 			ind.push_back(0);
 			coef[0] = n;
@@ -28,7 +28,7 @@ public:
 	}
 	polinom<IND, COEF>(IND l, COEF n) 
 	{
-		if (n >= 0.0001 && n <= -0.0001)
+		if (n >= 0.0001 || n <= -0.0001)
 		{
 			ind.push_back(l);
 			coef[l] = n;
@@ -40,14 +40,68 @@ public:
 		{
 			if (Coef[i] >= 0.001 || Coef[i] <= -0.001)
 			{
-				ind.push_back(i);
-				coef[i] = Coef[i];
+				ind.push_back(IND(i));
+				coef[IND(i)] = Coef[i];
 			}
 		}
 	}
 	polinom<IND, COEF>(std::vector<IND> Ind, std::map<IND, COEF> Coef) : ind(Ind), coef(Coef) {}
 	polinom<IND, COEF>(std::vector<IND> Ind, std::vector<COEF> Coef) : ind(Ind) { for (int i = 0, n = Ind.size(); i < n; i++) coef[ind[i]] = Coef[i]; }
-	//polinom<IND, COEF>(std::string pol)
+	polinom<IND, COEF>(std::string pol)
+	{
+		std::string polres = "";
+		pol = "#" + pol;
+		bool k = 0, upkey = 0;
+		for (int i = 0; pol[i]; i++, k = 0)
+		{
+			while (pol[i] && (pol[i] == ' ' || pol[i] == '*' || pol[i] == ')' || pol[i] == '(')) pol.erase(i, 1);
+			if (pol[i] == 'x')
+			{
+				if (pol[i - 1] < '0' || pol[i - 1] > '9') polres = polres + '1';
+				if (pol[i + 1] != '^') k = 1;
+			}
+			polres = polres + pol[i];
+			if (k) polres = polres + "^1";
+		}
+		for (int i = 0, n = polres.size(); i < n; i++)
+		{
+			if (polres[i] >= '0' && polres[i] <= '9' && polres[i - 1] != '^' && (polres[i - 1] < '0' || polres[i - 1] > '9'))
+			{
+				while (i < n && polres[i] >= '0' && polres[i] <= '9') i++;
+				if (i == n || polres[i] != 'x') polres.insert(i, "x^0");
+			}
+		}
+		polres = polres + '+';
+		polres.erase(0, 1);
+		//std::cout << polres << '\n';
+		std::string num;
+		COEF Coef;
+		IND Ind;
+		for (int i = 0, n = polres.size(); i < n; i++)
+		{
+			if (polres[i] == 'x')
+			{
+				std::istringstream in(num);
+				in >> Coef;
+				num = "";
+				i += 2;
+			}
+			else if (i && polres[i] == '-' || polres[i] == '+')
+			{
+				std::istringstream in(num);
+				in >> Ind;
+				if (Coef < -0.0001 || 0.0001 < Coef)
+				{
+					ind.push_back(IND(Ind));
+					coef[Ind] = COEF(Coef);
+				}
+				num = "";
+				if (polres[i] == '+') i++;
+			}
+			if (i < n) num = num + polres[i];
+		}
+		std::sort(ind.begin(), ind.end());
+	}
 
 	template <class IND, class COEF> friend bool operator ==(const polinom<IND, COEF>&, const polinom<IND, COEF>&);
 	template <class IND, class COEF, class type> friend bool operator ==(const polinom<IND, COEF>& l_val, const type& r_val) { return (l_val == polinom<IND, COEF>(r_val)); }
@@ -204,13 +258,23 @@ std::ostream& operator<< (std::ostream& out, const polinom<IND, COEF>& val)
 	}
 	return out;
 }
+
+template<class IND, class COEF>
+std::istream& operator>> (std::istream& in, polinom<IND, COEF>& val)
+{
+	std::string value;
+	getline(in, value);
+	val = polinom<IND, COEF>(value);
+	return in;
+}
 // умножение полиномов
 template <typename IND, typename COEF>
 polinom<IND, COEF> operator *(const polinom<IND, COEF>& l_val, const polinom<IND, COEF>& r_val)
 {
 	polinom<IND, COEF> lv = l_val,
 		rv = r_val;
-	COEF comp = std::max(l_val.ind[l_val.ind.size() - 1], r_val.ind[r_val.ind.size() - 1]);
+	if (l_val == 0 || r_val == 0) return polinom<IND, COEF>();
+	IND comp = std::max(l_val.ind[l_val.ind.size() - 1], r_val.ind[r_val.ind.size() - 1]);
 	/* умножение полиномов степени большей чем 1000000. Стандартное умножение "в столбик"*/
 	if (1 || comp * sizeof(COEF) > static_cast<long long>(1 << 30))
 	{
@@ -220,6 +284,7 @@ polinom<IND, COEF> operator *(const polinom<IND, COEF>& l_val, const polinom<IND
 		{
 			for (const IND& r : r_val.ind)
 			{
+				//std::cout << l << ' ' << r << '\n';
 				new_coef[l + r] = new_coef[l + r] + lv.coef[l] * rv.coef[r];
 				new_ind.push_back(l + r);
 			}
@@ -284,6 +349,8 @@ polinom<IND, COEF> operator *(const polinom<IND, COEF>& l_val, const polinom<IND
 template <typename IND, typename COEF>
 polinom<IND, COEF> operator /(const polinom<IND, COEF>& l_val, const polinom<IND, COEF>& r_val)
 {
+	//std::cout << "\n\n\n";
+	assert(r_val != 0);
 	polinom<IND, COEF> rv = r_val;
 	std::vector<IND> new_ind;
 	std::map<IND, COEF> new_coef;
@@ -292,12 +359,16 @@ polinom<IND, COEF> operator /(const polinom<IND, COEF>& l_val, const polinom<IND
 	IND r = r_val.ind[r_val.ind.size() - 1], l = div.ind[div.ind.size() - 1];
 	while (r <= l)
 	{
-		std::cout << r - l << std::endl;
+		//std::cout << l << ' ' << r << ' ' << (l - r) << std::endl;
 		new_ind.push_back(l - r);
 		new_coef[l - r] = div.coef[l] / rv.coef[r];
+		//std::cout << new_coef[l - r] << std::endl;
 		polinom<IND, COEF> g(l - r, new_coef[l - r]);
-		g = g * r_val;
+		//std::cout << g << std::endl;
+		g = g * rv;
+		//std::cout << g << std::endl;
 		div = div - g;
+		//std::cout << l << std::endl;
 		l = (div.ind.size() != 0 ? div.ind[div.ind.size() - 1] : -1);
 	}
 	for (int i = 0, n = new_ind.size(); i < n / 2; i++) std::swap(new_ind[i], new_ind[n - i - 1]);
