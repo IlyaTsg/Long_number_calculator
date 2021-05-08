@@ -14,6 +14,7 @@ public:
 	rational<T>(T num, T den) : num(num), den(den) { assert(den != 0); red(*this); }
 	rational<T>(T num) : num(num), den(T(1)) {}
 	rational(std::string rat);
+	rational<T>(long double value);
 	rational<T> operator -() { return rational<T>(-num, den); }
 	T getNum() { return num; }
 	T getDen() { return den; }
@@ -113,7 +114,7 @@ public:
 			//Reduction to a common denominator
 	void static comden(rational<T>& lval, rational<T>& rval) {
 		T cden = lcm(lval.den, rval.den);
-		assert(cden == 0);
+		assert(cden != 0);
 		lval.num = lval.num * (cden / lval.den);
 		rval.num = rval.num * (cden / rval.den);
 		lval.den = cden;
@@ -131,9 +132,9 @@ public:
 	}
 };
 //Турушев Тимур 0306
-////Ctor specializations
+////Специализации конструкторов
 typedef rational<ll> rational_ll;
-////String rat format - "(sign)num/den"
+////Формат строки - "(sign)num/den"
 rational_ll::rational(std::string rat) {
 	std::string nuM;
 	std::string deN;
@@ -154,6 +155,35 @@ rational_ll::rational(std::string rat) {
 	assert(den != 0); 
 	red(*this);
 }
+//Конструктор из даблов
+rational_ll::rational(long double value) {
+	ll denum(1), numer(0);
+	std::vector<long long> denums;
+	uint64_t* bytes = (uint64_t*)& value;
+	//Вычисление мантиссы. Первые 52 бита - это мантисса
+	for (long long i = 0; i < 52; i++) {
+		if ((1LL << i) & *bytes) denums.push_back(pow2(52 - i));
+	}
+	//Приведение к общему знаменателю
+	std::reverse(denums.begin(), denums.end());
+	if (denums.size() > 0) {
+		numer = ll(1);
+		for (int i = 1; i < denums.size(); i++) {
+			long long diff = denums[i] / denums[i - 1];
+			numer = numer * ll(diff) + ll(1);
+		}
+		denum = denums[denums.size() - 1];
+	}
+	//Вычисление экспоненты
+	rational<ll> exp;
+	int expo = ((*bytes >> 52) & 2047) - 1023; //2047 - 0b11111111111. Это степень экспоненты
+	if (expo == -1023) exp = rational<ll>("0/1"); //Случай для нуля
+	else if (expo >= 0) exp = rational<ll>(ll(pow2(expo)), ll(1));
+	else exp = rational<ll>(ll(1), ll(pow2(-expo)));
+	*this = (rational<ll>(numer, denum) + rational<ll>(ll(1))) * exp;
+	//Выбор знака
+	if (*bytes & (1LL << 63)) num.setSign(true);
+}
 
 template <class T>
 ll::ll(rational<T>& val)
@@ -171,3 +201,10 @@ template <>std::ostream& operator<< (std::ostream& out, const rational<ll>& val)
 	out << val.num << '/' << val.den;
 	return out;
 }*/
+//Перевод в строку
+template <class T>
+std::string toString(T val) {
+	std::ostringstream string;
+	string << val;
+	return string.str();
+}

@@ -1,6 +1,7 @@
 #pragma once
 #include "Errors.h"
 
+
 template <class T> class rational;
 //template <class IND, class COEF> polinom;
 
@@ -443,7 +444,7 @@ ll operator %(const ll& lval, const ll& rval)
 template <class Type>
 Type gcd(const Type a, const Type b) 
 { 
-    std::cout << a << '\n' << b << "\n\n\n";
+    //std::cout << a << '\n' << b << "\n\n\n";
     if (b == 0)
     {
         assert(a != 0 && "Error of GCD");
@@ -481,3 +482,5 @@ ll fib(int digit)
     }
     return fibm[digit];
 }
+
+long long pow2(int power) { return(1LL << power); } //Степени двойки
