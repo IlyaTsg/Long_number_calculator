@@ -121,7 +121,7 @@ public:
 		rational<T> rv = rval;
 		rational<T> lv = lval;
 		comden(rv, lv);
-		res.num = rv.num - lv.num;
+		res.num = lv.num - rv.num;
 		res.den = rv.den;
 		red(res);
 		return res;
