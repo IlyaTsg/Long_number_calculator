@@ -73,10 +73,6 @@ public:
 		rational<T> res;
 		res.num = rval.den * lval.num;
 		res.den = rval.num * lval.den;
-		if (lval.num > 0 && rval.num < 0) {
-			res.num.setSign(true);
-			res.den.setSign(false);
-		}
 		assert(res.den != 0);
 		red(res);
 		return res;
@@ -105,7 +101,7 @@ public:
 		T frac_gcd = gcd(to.num, to.den);
 		to.num = to.num / frac_gcd;
 		to.den = to.den / frac_gcd;
-		if (to.den < 0 && to.num < 0) {
+		if (to.den < 0) {
 			to.den = -to.den;
 			to.num = -to.num;
 		}
@@ -208,3 +204,4 @@ std::string toString(T val) {
 	string << val;
 	return string.str();
 }
+
