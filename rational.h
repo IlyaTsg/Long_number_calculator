@@ -8,7 +8,7 @@
  *  \authors Тимур и Мария
  */
 
-//Турушев Тимур 0306
+ //Турушев Тимур 0306
 template <class T>
 class rational
 {
@@ -26,15 +26,14 @@ public:
 	T getNum() { return num; }
 	T getDen() { return den; }
 	friend bool isnum(rational<T> val) { return (val.den == 1); }
-	friend ll::ll(rational<T>& val);
-	
+
 	/** \brief Сравнение 2 чисел
 	 * \details Сравнение рациональных чисел
 	 * \param secval const rational<T>& lv, const rational<T>& rv
 	 * \return bool true - если верно, false - если неверно
 	 * \authors Шкода Мария 0306
 	 */
-	
+
 	friend bool operator ==(const rational<T>& lv, const rational<T>& rv) { return (lv.num == rv.num && lv.den == rv.den); }
 	template <class type> friend bool operator ==(const rational<T>& lv, const type& rv) { return (lv == rational<T>(rv)); }
 	template <class type> friend bool operator ==(const type& lv, const rational<T>& rv) { return (rational<T>(lv) == rv); }
@@ -92,7 +91,7 @@ public:
 		return res;
 	}
 	//Турушев Тимур 0306
-	
+
 	friend std::ostream& operator<< (std::ostream& out, const rational<T>& val) {
 		out << val.num;
 		if (val.den != 1) out << "/" << val.den;
@@ -115,7 +114,7 @@ public:
 	 * \param secval rational<T>& to
 	 * \authors Турушев Тимур 0306
 	 */
-	//Reduction
+	 //Reduction
 	friend void red(rational<T>& to) {
 		T frac_gcd = gcd(to.num, to.den);
 		to.num = to.num / frac_gcd;
@@ -131,7 +130,7 @@ public:
 	 * \param secval rational<T>& lval, rational<T>& rval
 	 * \authors Шкода Мария 0306
 	 */
-			//Reduction to a common denominator
+	 //Reduction to a common denominator
 	void static comden(rational<T>& lval, rational<T>& rval) {
 		T cden = lcm(lval.den, rval.den);
 		assert(cden != 0);
@@ -158,12 +157,12 @@ public:
 	}
 };
 //Турушев Тимур 0306
-	
+
 /** \brief Специализации конструкторов
  * \details Формат строки - "(sign)num/den"
  * \authors Турушев Тимур 0306
- */	
-////Специализации конструкторов
+ */
+ ////Специализации конструкторов
 typedef rational<ll> rational_ll;
 ////Формат строки - "(sign)num/den"
 rational_ll::rational(std::string rat) {
@@ -173,7 +172,7 @@ rational_ll::rational(std::string rat) {
 	for (int i = 0; rat[i]; i++)
 	{
 		if (rat[i] == '-') minus++;
-		if (rat[i] == '/') drob++; 
+		if (rat[i] == '/') drob++;
 		if (!(rat[i] >= '0' && rat[i] <= '9' || rat[i] == '/' || rat[i] == '-')) rat.erase(i--, 1);
 	}
 	if (drob == 0) rat = rat + "/1";
@@ -183,14 +182,14 @@ rational_ll::rational(std::string rat) {
 	for (i += 1; i < rat.length(); i++) deN += rat[i];
 	num = ll(rat[0] == '-' ? '-' + nuM : nuM);
 	den = ll(deN);
-	assert(den != 0); 
+	assert(den != 0);
 	red(*this);
 }
 //Конструктор из даблов
 rational_ll::rational(long double value) {
 	ll denum(1), numer(0);
 	std::vector<long long> denums;
-	uint64_t* bytes = (uint64_t*)& value;
+	uint64_t* bytes = (uint64_t*)&value;
 	//Вычисление мантиссы. Первые 52 бита - это мантисса
 	for (long long i = 0; i < 52; i++) {
 		if ((1LL << i) & *bytes) denums.push_back(pow2(52 - i));
@@ -219,7 +218,7 @@ rational_ll::rational(long double value) {
 template <class T>
 ll::ll(rational<T>& val)
 {
-	ll ans = val.num / val.den;
+	ll ans = val.getNum() / val.getDen();
 	sign = ans.sign;
 	num = ans.num;
 }
@@ -239,4 +238,3 @@ std::string toString(T val) {
 	string << val;
 	return string.str();
 }
-
