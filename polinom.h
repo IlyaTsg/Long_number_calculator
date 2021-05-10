@@ -374,6 +374,10 @@ polinom<IND, COEF> operator *(const polinom<IND, COEF>& l_val, const polinom<IND
 	}*/
 }
 // деление полиномов
+// стандартное деление "в столбик"
+// если делимое меньше делителя, то возвращается 0
+// пока степень делителя меньше степени делимого то выполняем стандартное деление в столбик
+// возвращаем новый вектор степеней и новый словарь коэф.
 template <typename IND, typename COEF>
 polinom<IND, COEF> operator /(const polinom<IND, COEF>& l_val, const polinom<IND, COEF>& r_val)
 {
