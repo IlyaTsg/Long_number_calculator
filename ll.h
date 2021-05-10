@@ -1,9 +1,9 @@
 #pragma once
-#include <iostream>
-#include <vector>
-#include <string>
-#include <complex>
-#include <map>
+#include "Errors.h"
+
+class vln;
+template <class T> class rational;
+//template <class IND, class COEF> polinom;
 
 void flush(std::vector<long long>& g)
 {
@@ -23,49 +23,69 @@ int log2(long long n)
 class ll
 {
 private:
-    std::vector<long long> num;  //Âåêòîð öèôð
-    bool sign;              //0 - ïëþñ, 1 - ìèíóñ
+    std::vector<long long> num;  //Вектор цифр в 10^9-ичной системе счисления в обратном порядке
+    bool sign;              //0 - плюс, 1 - минус
 
 public:
-    ll() : sign{ false }, num({ 0 }){};
+    //Конструкторы
+    ll() : sign{ false }, num({ 0 }){};     //Пустой
+    //По знаку и значению
     ll(bool sig, std::vector<long long> nu) : sign(sig), num(nu) {}
-    ll(int to);
-    ll(long long to);
-    ll(std::string to);
 
-    std::vector<long long> getVec() { return num; }
+    ll(int to);                             //По числу
+    ll(long long to);
+
+    ll(std::string to);                     //По строке
+
+    ll(vln val);
+
+    template <class T> ll(rational<T>& val);
+
+
+    void NaN_to_NULL() { if (num.size() == 1 && num[0] == 0) sign = 0; }      //Замена значения NaN на обыкновенный 0
+
+    std::vector<long long> getVec() { return num; }                           //Геттеры
     bool getSign() { return sign; }
 
+    void setSign(bool val) { sign = val; }                                    //Сеттеры
+
+    //Унарный минус
     ll operator -() const { return ll((!(num.size() == 1 && num[0] == 0) - sign), num); }
 
+    //Операторы сравнения, реализованные сначала для собственного типа данных, затем для литералов других типов данных
     friend bool operator ==(const ll& lval, const ll& rval);
-    template<typename T> friend bool operator ==(const T& lval, const ll& rval) { return (ll(lval) == rval); }
-    template<typename T> friend bool operator ==(const ll& lval, const T& rval) { return (lval == ll(rval)); }
+    template<class T> friend bool operator ==(const T& lval, const ll& rval) { return (ll(lval) == rval); }
+    template<class T> friend bool operator ==(const ll& lval, const T& rval) { return (lval == ll(rval)); }
 
     friend bool operator > (const ll& lval, const ll& rval);
-    template <typename T> friend bool operator > (const T& lval, const ll& rval) { return (ll(lval) > rval); }
-    template <typename T> friend bool operator > (const ll& lval, const T& rval) { return (lval > ll(rval)); }
+    template <class T> friend bool operator > (const T& lval, const ll& rval) { return (ll(lval) > rval); }
+    template <class T> friend bool operator > (const ll& lval, const T& rval) { return (lval > ll(rval)); }
 
     friend bool operator < (const ll& lval, const ll& rval) { return rval > lval; }
-    template <typename T> friend bool operator < (const ll& lval, const T& rval) { return (lval < ll(rval)); }
-    template <typename T> friend bool operator < (const T& lval, const ll& rval) { return (ll(lval) < rval); }
+    template <class T> friend bool operator < (const ll& lval, const T& rval) { return (lval < ll(rval)); }
+    template <class T> friend bool operator < (const T& lval, const ll& rval) { return (ll(lval) < rval); }
 
     friend bool operator !=(const ll& lval, const ll& rval) { return !(lval == rval); }
-    template <typename T> friend bool operator !=(const T& lval, const ll& rval) { return (ll(lval) != rval); }
-    template <typename T> friend bool operator !=(const ll& lval, const T& rval) { return (lval != ll(rval)); }
-    
+    template <class T> friend bool operator !=(const T& lval, const ll& rval) { return (ll(lval) != rval); }
+    template <class T> friend bool operator !=(const ll& lval, const T& rval) { return (lval != ll(rval)); }
+
     friend bool operator >=(const ll& lval, const ll& rval) { return !(lval < rval); }
-    template <typename T> friend bool operator >=(const T& lval, const ll& rval) { return !(ll(lval) < rval); }
-    template <typename T> friend bool operator >=(const ll& lval, const T& rval) { return !(lval < ll(rval)); }
+    template <class T> friend bool operator >=(const T& lval, const ll& rval) { return !(ll(lval) < rval); }
+    template <class T> friend bool operator >=(const ll& lval, const T& rval) { return !(lval < ll(rval)); }
 
     friend bool operator <=(const ll& lval, const ll& rval) { return !(lval > rval); }
-    template <typename T> friend bool operator <=(const T& lval, const ll& rval) { return !(ll(lval) > rval); }
-    template <typename T> friend bool operator <=(const ll& lval, const T& rval) { return !(lval > ll(rval)); }
+    template <class T> friend bool operator <=(const T& lval, const ll& rval) { return !(ll(lval) > rval); }
+    template <class T> friend bool operator <=(const ll& lval, const T& rval) { return !(lval > ll(rval)); }
 
-    //friend bool operator = (ll& val) { sign = val.sign; num = val.num; }
 
     friend ll operator +(const ll& lval, const ll& rval);       //Z-6
+    template <class T> friend ll operator +(const T& lval, const ll& rval) { return ll(lval) + rval; }
+    template <class T> friend ll operator +(const ll& lval, const T& rval) { return lval + ll(rval); }
+
     friend ll operator -(const ll& lval, const ll& rval) { return (lval + (-rval)); }       //Z-7
+    template <class T> friend ll operator -(const T& lval, const ll& rval) { return ll(lval) - rval; }
+    template <class T> friend ll operator -(const ll& lval, const T& rval) { return lval - ll(rval); }
+
     friend ll operator %(const ll& lval, const ll& rval);       //Z-10
     friend long long operator %(const ll& l_val, int r_val);
     friend ll operator *(const ll& lval, const ll& rval);       //Z-8
@@ -87,12 +107,13 @@ public:
     }
 };
 
-namespace power
+namespace power         //Пространство имен для констант
 {
     const int mod = 1'000'000'000;
     const double PI = 3.141592653589793238462643383279;
 }
 
+//Перегрузка потокового ввода
 std::istream& operator>> (std::istream& in, ll& val)
 {
     std::string key;
@@ -128,10 +149,12 @@ bool operator >(const ll& lval, const ll& rval)
  * \return bool true, åñëè ëåâîå ìåíüøå ïðàâîãî, èíà÷å false
  */
 
+ //Частный случай остатка от деления, для int делителя
 long long operator %(const ll& l_val, int r_val)
 {
+    assert(r_val != 0);
     long long sum = 0;
-    for (long long i = 0, n = l_val.num.size() , p = 1; i < n; i++)
+    for (long long i = 0, n = l_val.num.size(), p = 1; i < n; i++)
     {
         sum = (sum + l_val.num[i] * p) % r_val;
         p = p * power::mod % r_val;
@@ -139,6 +162,7 @@ long long operator %(const ll& l_val, int r_val)
     return sum % r_val;
 }
 
+//Градусные тригонометрические функции
 long double sin(ll a)
 {
     long double key = static_cast<long double>(a % 360) / 180 * power::PI;
@@ -163,6 +187,7 @@ long double ctg(ll a)
     return cos(key) / sin(key);
 }
 
+//Частный случай умножения, для int множителя, реализован столбик
 ll operator *(const ll& lval, int rval)
 {
     bool new_sign = (lval.sign ^ (rval < 0));
@@ -178,10 +203,13 @@ ll operator *(const ll& lval, int rval)
     }
     if (sum != 0) tmp.push_back(sum);
     flush(tmp);
-    return ll(new_sign, tmp);
+    ll ans = ll(new_sign, tmp);
+    ans.NaN_to_NULL();
+    return ans;
 }
 
-bool operator ==(const ll& lval, const ll& rval) 
+//Поциферное сравнение двух чисел
+bool operator ==(const ll& lval, const ll& rval)
 {
     int len1 = lval.num.size();
     if (len1 != rval.num.size() || lval.sign != rval.sign) return false; // íå ðàâíû
@@ -189,12 +217,14 @@ bool operator ==(const ll& lval, const ll& rval)
     return true;
 }
 
+//Положительное/Отрицательное/Ноль --- число
 short ll::poz()
 {
     if (num.size() == 1 && num[0] == 0) return 0;
     return (2 - sign);
 }
 
+//Перегрузка потокового вывода
 std::ostream& operator<< (std::ostream& out, const ll& val)
 {
     std::ios_base::sync_with_stdio(false);
@@ -215,11 +245,12 @@ std::ostream& operator<< (std::ostream& out, const ll& val)
             for (long long x = val.num[i]; x > 0; x /= 10, h++);
             for (int j = 0; j < 9 - h; j++) out << '0';
         }
-        if(val.num[i] != 0) out << val.num[i];
+        if (val.num[i] != 0) out << val.num[i];
     }
     return out;
 }
 
+//Алгоритм быстрого преобразования Фурье
 void fft(std::vector<std::complex<long double>>& to, bool invert)
 {
     int n = to.size();
@@ -247,96 +278,34 @@ void fft(std::vector<std::complex<long double>>& to, bool invert)
     }
 }
 
+
 ll operator+(const ll& lval, const ll& rval) {
-    // creating ll instance with empty vector, because default constructor creates vector with 0 element within
-    ll result(0, std::vector<long long>{});
-    long long minsize = std::min(lval.num.size(), rval.num.size());
-    long long maxsize = std::max(lval.num.size(), rval.num.size());
-    /*
-    * after addition of two elements programm adds first 9 elements to resultant vector and divides sum by 10^9 for sake of overflow tracing,
-    *because if overflow happens this division's result would be 1, which we will add to next element, otherwise this division's result would be 0
-    */
-    if (lval.sign == rval.sign) 
+    std::vector<long long> lvec = lval.num;
+    std::vector<long long> rvec = rval.num;
+    lvec.size() > rvec.size() ? rvec.resize(lvec.size(), 0) : lvec.resize(rvec.size(), 0);
+    ll result(0, std::vector<long long>(lvec.size() + 1, 0));
+    if (lval.abs() < rval.abs()) std::swap(lvec, rvec);
+    bool sf = (rval.sign != lval.sign); //Sign Flag
+    bool lf; //Less than Flag
+    for (int i = 0; i < lvec.size(); i++)
     {
-        long long sum = 0;
-        for (int i = 0; i < minsize; i++) 
-        {
-            sum += lval.num[i] + rval.num[i];
-            result.num.push_back(sum % power::mod);
-            sum /= power::mod;
-        }
-        //addition of remainding larger vector's elemenets, which weren't involved in addition.
-        if (lval.num.size() > rval.num.size()) 
-        {
-            for (int i = minsize; i < maxsize; i++) 
-            {
-                sum += lval.num[i];
-                result.num.push_back(sum % power::mod);
-                sum /= power::mod;
-            }
-        }
-        else if (lval.num.size() < rval.num.size()) 
-        {
-            for (int i = minsize; i < maxsize; i++) 
-            {
-                sum += rval.num[i];
-                result.num.push_back(sum % power::mod);
-                sum /= power::mod;
-            }
-        }
-        //if after all those calculations programm got left 1, programm adds this 1 to next new rank
-        if (sum) result.num.push_back(1);
-        result.sign = lval.sign;
-    }//if the signs of operands don't match, programm calculate substraction.
-    else 
-    {
-        long long sub = 0;
-        //choosing from which ll instance we substract another one
-        if (lval == -rval) result = ll();
-        else if (lval.abs() >= rval.abs())
-        {
-            for (int i = 0; i < minsize; i++)
-            {
-                sub = power::mod * static_cast<long long>(lval.num[i] < rval.num[i] + sub) + lval.num[i] - rval.num[i] - sub;
-                result.num.push_back(sub);
-                //check for borrowing 1 from higher rank
-                sub = ((lval.num[i] < rval.num[i] + sub) ? 1 : 0);
-            }
-        }
-        else 
-        {
-            for (int i = 0; i < minsize; i++) 
-            {
-                sub = power::mod * static_cast<long long>(rval.num[i] < lval.num[i] + sub) + rval.num[i] - lval.num[i] - sub;
-                result.num.push_back(sub);
-                //check for borrowing 1 from higher rank
-                sub = (rval.num[i] < lval.num[i] + sub) ? 1 : 0;
-            }
-            //addition of remainding larger vector's elemenets, which weren't involved in addition, and if necessary we borrow 1 form higher ranks
-        }
-        if (lval.abs() >= rval.abs())
-        {
-            for (int i = minsize; i < maxsize; i++) 
-            {
-                sub = power::mod * (lval.num[i] < sub) + lval.num[i] - sub;
-                if (sub > lval.num[i]) sub = 1;
-                result.num.push_back(sub);
-            }
-        }
-        else 
-        {
-            for (int i = minsize; i < maxsize; i++) 
-            {
-                sub = power::mod * (rval.num[i] < sub) + rval.num[i] - sub;
-                if (sub > rval.num[i]) sub = 1;
-                result.num.push_back(sub);
-            }
-        }
-        //deleting insignificant 0 from end of vector
-        if (result.num.size() > 1 && result.num[result.num.size() - 1] == 0) result.num.pop_back();
-        result.sign = ((lval.abs() >= rval.abs()) ? lval.sign : rval.sign);
+        lf = (lvec[i] < rvec[i]);
+		// "(1 - 2*static_cast<long long>(sf)) * rvec[i]" это проверка на тип операции(вычитание или сложение).Если sf(флаг знака) равен 1, т.е.
+		//  знаки операндов не совпадают, то "1 - 2*sf" даёт -1 и мы получаем знак минус перед rvec[i]. А если знаки операндов совпадают (sf = 0), то
+		//  мы получаем просто единицу перед rvec[i] и таким образом происходит сложение.
+		//	"power::mod*sf*lf + lvec[i]" это выражение отвечает за занятие 1 из старших разрядов. Здесь происходит проверка двух флагов - флаг знака(т.е. происходит
+		// ли вычитание) и флаг lf, отвечающий за проверку меньше ли вычитаемый разряд. Если эти флаги выполняются, то мы получаем power::mod + lval[i] (10^9 +lval[i].
+        result.num[i] += power::mod * sf * lf + lvec[i] + (1 - 2 * static_cast<long long>(sf)) * rvec[i];
+        lf = (lvec[i] < result.num[i]);
+		//	Следующие строки отвечают за занятие единицы (в случае вычитания) или добавления единицы (в случае сложения) к старшим разрядам.
+		//	"(result.num[i] / power::mod)" это выражение даёт 1, если кол-во цифр превысило 10^9 (проверка на переполнение при сложении).
+		//	"(lf && sf)" если sf = 1 (вычитание) и lf (вычитаемый разряд меньше), то выражение даёт нам -1 (проверка на занятие 1 из старшего разряда).
+        result.num[i + 1] += (result.num[i] / power::mod) - (lf && sf);
+        result.num[i] %= power::mod;
     }
+    result.sign = sf * (lval.abs() < rval.abs()) ? rval.sign : lval.sign;
     flush(result.num);
+    result.NaN_to_NULL();
     return result;
 }
 
@@ -381,7 +350,9 @@ ll operator *(const ll& lval, const ll& rval)
         else ansy[i / 3] += static_cast<long long>(pow(1000, i % 3)) * ans[i];
     }
     flush(ansy);
-    return ll(lval.sign ^ rval.sign, ansy);
+    ll a = ll(lval.sign ^ rval.sign, ansy);
+    a.NaN_to_NULL();
+    return a;
 }
 
 ll::ll(int to) : sign{ to < 0 } {
@@ -398,12 +369,12 @@ ll::ll(long long to) : sign{ to < 0 } {
     num.push_back(to / power::mod);
     flush(num);
 }
-ll::ll(std::string to) 
+ll::ll(std::string to)
 {
     int digit = 0, degree = 1;
     sign = (to[0] == '-');
     if (sign) to.erase(0, 1);
-    for (int len = to.length(), i = len - 1; i >= 0; i--) 
+    for (int len = to.length(), i = len - 1; i >= 0; i--)
     {
         while (i && to[i] == static_cast<char>(39))
         {
@@ -412,7 +383,7 @@ ll::ll(std::string to)
             len--;
         }        digit = digit + (static_cast<long long>(to[i]) - 48) * degree;
         degree *= 10;
-        if (!((len - i) % 9) || !i) 
+        if (!((len - i) % 9) || !i)
         {
             num.push_back(digit);
             digit = 0;
@@ -434,8 +405,8 @@ ll divby2(ll val)
     //std::cout << val.num.size() << std::endl;
     for (int i = 0, n = val.num.size(); i < n; i++)
     {
-        if(!(i == n - 1 && val.num[i] < 2)) new_val.push_back(val.num[i] / 2);
-        if(i) new_val[i - 1] = new_val[i - 1] + val.num[i] % 2 * (power::mod / 2);
+        if (!(i == n - 1 && val.num[i] < 2)) new_val.push_back(val.num[i] / 2);
+        if (i) new_val[i - 1] = new_val[i - 1] + val.num[i] % 2 * (power::mod / 2);
         //std::cout << new_val[i] << std::endl;
     }
     flush(new_val);
@@ -444,6 +415,7 @@ ll divby2(ll val)
 
 ll operator /(const ll& lval, const ll& rval)
 {
+    assert(rval != 0);
     bool new_sign = (lval.sign ^ rval.sign);
     ll l_val = lval.abs(), r_val = rval.abs(), l, r = l_val + 1, new_val, one(1), g = r - l - 1;
     //std::cout << l << ' ' << r << std::endl;
@@ -457,46 +429,60 @@ ll operator /(const ll& lval, const ll& rval)
     }
     flush(l.num);
     l.sign = new_sign;
+    l.NaN_to_NULL();
     return l;
 }
 
-ll operator %(const ll& lval, const ll& rval) { return lval - lval / rval * rval;  }
+ll operator %(const ll& lval, const ll& rval)
+{
+    assert(rval != 0);
+    ll ans = lval - lval / rval * rval;
+    ans.NaN_to_NULL();
+    return ans;
+}
 //The repair is over
 
 // Илья Цыганков гр. 0306
 template <class Type>
-Type gcd(Type a, Type b) { return (b==0 ? a:gcd(b, a%b)); }
+Type gcd(const Type a, const Type b)
+{
+    //std::cout << a << '\n' << b << "\n\n\n";
+    if (b == 0)
+    {
+        assert(a != 0 && "Error of GCD");
+        return a;
+    }
+    return gcd(b, a % b);
+}
 
 // Илья Цыганков гр. 0306
 template <class Type>
-Type lcm(Type a, Type b) { return a / gcd(a, b) * b; }
+Type lcm(const Type a, const Type b) { return a / gcd(a, b) * b; }
 
 // Илья Цыганков гр. 0306
 ll fact(int digit)
 {
+    assert(digit >= 0);
     ll tmp = 1;
-    for(int i = 2; i <= digit; i++) tmp = tmp * i;
+    for (int i = 2; i <= digit; i++) tmp = tmp * i;
     return tmp;
 }
 
 // Илья Цыганков гр. 0306
 ll fib(int digit)
 {
+    assert(digit >= 0);
     static std::map<long long, ll> fibm;
-    if(fibm[digit] == 0){
-        fibm[0]=0;
-        fibm[1]=1;
-        fibm[2]=1;
-        fibm[3]=2;
-        if(digit < 4) return fibm[digit];
-        else if(digit%2){
-            fibm[digit] = fib((digit-1)/2 + 1)*fib((digit-1)/2 + 2) - fib((digit-1)/2)*fib((digit-1)/2 - 1);
-            return fibm[digit];
-        }
-        else{
-            fibm[digit] = fib(digit/2)*(fib(digit/2-1) + fib(digit/2+1));
-            return fibm[digit];
-        }   
+    if (fibm[digit] == 0) {
+        fibm[0] = 0;
+        fibm[1] = 1;
+        fibm[2] = 1;
+        fibm[3] = 2;
+        if (digit < 4) return fibm[digit];
+        else if (digit % 2) fibm[digit] = fib((digit - 1) / 2 + 1) * fib((digit - 1) / 2 + 2) - fib((digit - 1) / 2) * fib((digit - 1) / 2 - 1);
+        else fibm[digit] = fib(digit / 2) * (fib(digit / 2 - 1) + fib(digit / 2 + 1));
     }
-    else return fibm[digit];
+    return fibm[digit];
 }
+
+long long pow2(int power) { return(1LL << power); } //Степени двойки
