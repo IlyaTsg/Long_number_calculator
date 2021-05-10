@@ -112,7 +112,7 @@ bool vln::nzer() { return num == 0; }
  * \authors Артём
  * \return vln полученное число
  */
-vln vln::inc() 
+vln vln::inc()
 {
     num = num + 1;
     return (*this);
@@ -166,13 +166,20 @@ vln vln::div(const vln& secval)
  * \param secval const vln& выводимое число
  * \return std::ostream& поток с числом в нём
  */
-std::ostream& operator<< (std::ostream& out, const vln& val) 
+std::ostream& operator<< (std::ostream& out, const vln& val)
 {
     out << val.num;
     return out;
 }
-std::istream& operator>> (std::istream & in, vln & val) 
+std::istream& operator>> (std::istream& in, vln& val)
 {
     in >> val.num;
     return in;
+}
+
+std::string toString(vln val)
+{
+    std::ostringstream string;
+    string << val;
+    return string.str();
 }
