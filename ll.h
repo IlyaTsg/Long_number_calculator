@@ -290,16 +290,16 @@ ll operator+(const ll& lval, const ll& rval) {
     for (int i = 0; i < lvec.size(); i++)
     {
         lf = (lvec[i] < rvec[i]);
-        // "(1 - 2*static_cast<long long>(sf)) * rvec[i]" statement is responsible for checking type of operation, i.e.
-        //  substraction or addition. If sf = 1 (i.e. signs of operands aren't equal) programm calclulate this statement to 1-2 = -1, and so
-        //	we got minus sign for rvec[i]
-        //	"power::mod*sf*lf + lvec[i]" statement is responsible for borrowing 1 from higher rank. If sf = 1 (substraction) and lf = 1 (substraction from 
-        //	lesser element) than we multiply it b 10^9 (borrowing 1 from higher rank)
+		// "(1 - 2*static_cast<long long>(sf)) * rvec[i]" это проверка на тип операции(вычитание или сложение).Если sf(флаг знака) равен 1, т.е.
+		//  знаки операндов не совпадают, то "1 - 2*sf" даёт -1 и мы получаем знак минус перед rvec[i]. А если знаки операндов совпадают (sf = 0), то
+		//  мы получаем просто единицу перед rvec[i] и таким образом происходит сложение.
+		//	"power::mod*sf*lf + lvec[i]" это выражение отвечает за занятие 1 из старших разрядов. Здесь происходит проверка двух флагов - флаг знака(т.е. происходит
+		// ли вычитание) и флаг lf, отвечающий за проверку меньше ли вычитаемый разряд. Если эти флаги выполняются, то мы получаем power::mod + lval[i] (10^9 +lval[i].
         result.num[i] += power::mod * sf * lf + lvec[i] + (1 - 2 * static_cast<long long>(sf)) * rvec[i];
         lf = (lvec[i] < result.num[i]);
-        //	This block is responsible for borrowing from higher rank in case of substraction or for addition 1 to higher rank in case of addition.
-        //	"(result.num[i] / power::mod)" statement gives us 1 if we got more than 9 digits, and 0 if less than 9 digits (that's check for addition overflow).
-        //	"(lf && sf)" statement if sf = 1 (substraction operation) and lf (substraction from lesser element) gives us -1 (that's check for borrowing from higher ranks)
+		//	Следующие строки отвечают за занятие единицы (в случае вычитания) или добавления единицы (в случае сложения) к старшим разрядам.
+		//	"(result.num[i] / power::mod)" это выражение даёт 1, если кол-во цифр превысило 10^9 (проверка на переполнение при сложении).
+		//	"(lf && sf)" если sf = 1 (вычитание) и lf (вычитаемый разряд меньше), то выражение даёт нам -1 (проверка на занятие 1 из старшего разряда).
         result.num[i + 1] += (result.num[i] / power::mod) - (lf && sf);
         result.num[i] %= power::mod;
     }
