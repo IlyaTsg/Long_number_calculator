@@ -1,31 +1,49 @@
+/**\file ll.h
+ * \brief Cодержит в себе класс целых чисел \ref ll "класс ll" и \ref power "пространство имён power"
+
+*/
 #pragma once
 #include <iostream>
 #include <vector>
 #include <string>
 #include <complex>
 
+/** \namespace power
+ *\brief Пространство имён, содержащее необходимые константы
+ */
 namespace power
 {
-    const int mod = 1'000'000'000;
-    const double PI = 3.141592653589793238462643383279;
-}
+    const int mod = 1'000'000'000;  /**< Часто используемое число */
+    const double PI = 3.141592653589793238462643383279; /**< Это так мышка говорит */
 
+}
+/**\fn flush
+ * \brief Нормализует вектор
+ * \details Нормализует вектор, убирая все ведущие нули с его начала
+ * \author Георгий
+ * \param g std::vector<long long>& сам вектор для нормализации
+ */
 void flush(std::vector<long long>& g)
-{
-    int k = g.size() - 1;
+{   int k = g.size() - 1;
     if (k <= 0) return;
     while (k > 0 && g[k] == 0) k--;
     g.resize(k + 1);
 }
 
+
+/** \class ll
+ *  \brief Класс очень длинных целых чисел
+ *	\details Реализует в себе все необходимо-достаточные возможности для работы с очень длинным целыми числами, такие как сравнение, и простейщие арифметические операции\n
+ *  Само длинное число представлено в ввиде массива его чисел, сгруппированных по 9, и отдельной переменной-знака.
+ */
 class ll
 {
 private:
-    std::vector<long long> num;  //Âåêòîð öèôð
-    bool sign;              //0 - ïëþñ, 1 - ìèíóñ
+    std::vector<long long> num; /**< Вектор, хранящий цифры данного числа  */
+    bool sign;              	/**< Знак этого числа */
 
 public:
-    ll() : sign{ false }, num({ 0 }){};
+	ll() : sign{ false }, num({ 0 }){};
     ll(bool sig, std::vector<long long> nu) : sign(sig), num(nu) {}
     ll(int to);
     ll(long long to);
@@ -51,7 +69,7 @@ public:
     friend bool operator !=(const ll& lval, const ll& rval) { return !(lval == rval); }
     template <typename T> friend bool operator !=(const T& lval, const ll& rval) { return !(ll(lval) != rval); }
     template <typename T> friend bool operator !=(const ll& lval, const T& rval) { return !(lval != ll(rval)); }
-    
+
     friend bool operator >=(const ll& lval, const ll& rval) { return !(lval < rval); }
     template <typename T> friend bool operator >=(const T& lval, const ll& rval) { return !(ll(lval) < rval); }
     template <typename T> friend bool operator >=(const ll& lval, const T& rval) { return !(lval < ll(rval)); }
@@ -65,7 +83,7 @@ public:
     friend ll operator +(const ll& lval, const ll& rval);       //Z-6
     friend ll operator -(const ll& lval, const ll& rval) { return (lval + (-rval)); }       //Z-7
     friend ll operator %(const ll& lval, const ll& rval);       //Z-10
-    friend long long operator %(const ll& l_val, int r_val)
+    friend long long operator %(const ll& l_val, int r_val);
     friend ll operator *(const ll& lval, const ll& rval);       //Z-8
     friend ll operator *(const ll& lval, int rval);
     friend ll operator *(int lval, const ll& rval) { return rval * lval; }
@@ -79,15 +97,6 @@ public:
     friend ll divby2(ll val);
 };
 
-/**\brief оператор > для двух ll чисел
- * Сравнивает последовательно сначала знаки чисел, потом их длину, потом начиная с наибольшего сравнивает их посимвольно
- * Не зависит от других функций и операторов
- * Асимптотика по времени - O(n), константа асимптотики 2
- * Асимптотика по памяти - O(1), константа асимптотики 2
- * \param lval const ll& левое число
- * \param rval const ll& правое число
- * \return bool true, если левое больше правого, иначе false
- */
 bool operator >(const ll& lval, const ll& rval)
 {
     if (lval.sign != rval.sign) return (lval.sign < rval.sign);
@@ -150,7 +159,7 @@ ll operator *(const ll& lval, int rval)
     return ll(new_sign, tmp);
 }
 
-bool operator ==(const ll& lval, const ll& rval) 
+bool operator ==(const ll& lval, const ll& rval)
 {
     int len1 = lval.num.size();
     if (len1 != rval.num.size() || lval.sign != rval.sign) return false; // íå ðàâíû
@@ -226,28 +235,28 @@ ll operator+(const ll& lval, const ll& rval) {
     * after addition of two elements programm adds first 9 elements to resultant vector and divides sum by 10^9 for sake of overflow tracing,
     *because if overflow happens this division's result would be 1, which we will add to next element, otherwise this division's result would be 0
     */
-    if (lval.sign == rval.sign) 
+    if (lval.sign == rval.sign)
     {
         long long sum = 0;
-        for (int i = 0; i < minsize; i++) 
+        for (int i = 0; i < minsize; i++)
         {
             sum += lval.num[i] + rval.num[i];
             result.num.push_back(sum % power::mod);
             sum /= power::mod;
         }
         //addition of remainding larger vector's elemenets, which weren't involved in addition.
-        if (lval.num.size() > rval.num.size()) 
+        if (lval.num.size() > rval.num.size())
         {
-            for (int i = minsize; i < maxsize; i++) 
+            for (int i = minsize; i < maxsize; i++)
             {
                 sum += lval.num[i];
                 result.num.push_back(sum % power::mod);
                 sum /= power::mod;
             }
         }
-        else if (lval.num.size() < rval.num.size()) 
+        else if (lval.num.size() < rval.num.size())
         {
-            for (int i = minsize; i < maxsize; i++) 
+            for (int i = minsize; i < maxsize; i++)
             {
                 sum += rval.num[i];
                 result.num.push_back(sum % power::mod);
@@ -258,7 +267,7 @@ ll operator+(const ll& lval, const ll& rval) {
         if (sum) result.num.push_back(1);
         result.sign = lval.sign;
     }//if the signs of operands don't match, programm calculate substraction.
-    else 
+    else
     {
         long long sub = 0;
         //choosing from which ll instance we substract another one
@@ -273,9 +282,9 @@ ll operator+(const ll& lval, const ll& rval) {
                 sub = ((lval.num[i] < rval.num[i] + sub) ? 1 : 0);
             }
         }
-        else 
+        else
         {
-            for (int i = 0; i < minsize; i++) 
+            for (int i = 0; i < minsize; i++)
             {
                 sub = power::mod * static_cast<long long>(rval.num[i] < lval.num[i] + sub) + rval.num[i] - lval.num[i] - sub;
                 result.num.push_back(sub);
@@ -286,16 +295,16 @@ ll operator+(const ll& lval, const ll& rval) {
         }
         if (lval.abs() >= rval.abs())
         {
-            for (int i = minsize; i < maxsize; i++) 
+            for (int i = minsize; i < maxsize; i++)
             {
                 sub = power::mod * (lval.num[i] < sub) + lval.num[i] - sub;
                 if (sub > lval.num[i]) sub = 1;
                 result.num.push_back(sub);
             }
         }
-        else 
+        else
         {
-            for (int i = minsize; i < maxsize; i++) 
+            for (int i = minsize; i < maxsize; i++)
             {
                 sub = power::mod * (rval.num[i] < sub) + rval.num[i] - sub;
                 if (sub > rval.num[i]) sub = 1;
@@ -368,17 +377,17 @@ ll::ll(long long to) : sign{ to < 0 } {
     num.push_back(to / power::mod);
     flush(num);
 }
-ll::ll(std::string to) 
+ll::ll(std::string to)
 {
     int digit = 0, degree = 1;
     sign = (to[0] == '-');
     if (sign) to.erase(0, 1);
-    for (int len = to.length(), i = len - 1; i >= 0; i--) 
+    for (int len = to.length(), i = len - 1; i >= 0; i--)
     {
         while(to[i] == static_cast<char>(39)) to.erase(i, 1);
         digit = digit + (static_cast<long long>(to[i]) - 48) * degree;
         degree *= 10;
-        if (!((len - i) % 9) || !i) 
+        if (!((len - i) % 9) || !i)
         {
             num.push_back(digit);
             digit = 0;
