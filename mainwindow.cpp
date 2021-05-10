@@ -113,33 +113,28 @@ MainWindow::MainWindow(QWidget* parent) : QWidget(parent)
 
 
     //trig
-    sinButton->setFixedSize(65, 70);
-    cosButton->setFixedSize(65, 70);
-    tanButton->setFixedSize(65, 70);
-    ctgButton->setFixedSize(65, 70);
-    lcmButton->setFixedSize(135, 70);
-    gcdButton->setFixedSize(135, 70);
+    sinButton->setFixedSize(140, 70);
+    cosButton->setFixedSize(140, 70);
+    tanButton->setFixedSize(140, 70);
+    ctgButton->setFixedSize(140, 70);
+    lcmButton->setFixedSize(140, 70);
+    gcdButton->setFixedSize(140, 70);
 
     QHBoxLayout* lay4 = new QHBoxLayout();
     lay4->addWidget(sinButton);
     lay4->addWidget(cosButton);
     lay4->addWidget(tanButton);
     lay4->addWidget(ctgButton);
-    lay4->addWidget(lcmButton);
-    lay4->addWidget(gcdButton);
-    
 
 
     //Polinom
     derButton->setFixedSize(140, 70);
-    intButton->setFixedSize(140, 70);
-    korButton->setFixedSize(140, 70);
     znaButton->setFixedSize(140, 70);
 
     QHBoxLayout* lay5 = new QHBoxLayout();
     lay5->addWidget(derButton);
-    lay5->addWidget(intButton);
-    lay5->addWidget(korButton);
+    lay5->addWidget(lcmButton);
+    lay5->addWidget(gcdButton);
     lay5->addWidget(znaButton);
 
 
@@ -182,7 +177,6 @@ MainWindow::MainWindow(QWidget* parent) : QWidget(parent)
     connect(resButton, SIGNAL(clicked(bool)), this, SLOT(onResu()));
 
     connect(znaButton, SIGNAL(clicked(bool)), this, SLOT(onZna()));
-    connect(intButton, SIGNAL(clicked(bool)), this, SLOT(onInt()));
 
     connect(gcdButton, SIGNAL(clicked(bool)), this, SLOT(onGcd()));
     connect(lcmButton, SIGNAL(clicked(bool)), this, SLOT(onLcm()));
@@ -223,8 +217,6 @@ void MainWindow::onStart(bool flag)
 
 
     derButton->setEnabled(flag);
-    intButton->setEnabled(flag);
-    korButton->setEnabled(flag);
     znaButton->setEnabled(flag);
 
     resButton->setEnabled(flag);
@@ -237,8 +229,6 @@ void MainWindow::forLL()
     fiboButton->setEnabled(false);
 
     derButton->setEnabled(false);
-    intButton->setEnabled(false);
-    korButton->setEnabled(false);
     znaButton->setEnabled(false);
     lcmButton->setEnabled(false);
     gcdButton->setEnabled(false);
@@ -351,12 +341,6 @@ void MainWindow::onZna()
 {
     numOne = scanText();
     flag = 5;
-}
-
-void MainWindow::onInt()
-{
-    numOne = scanText();
-    flag = 6;
 }
 
 void MainWindow::onLcm()
@@ -520,10 +504,6 @@ void MainWindow::onResu()
             num3 = std::stoi(numTwo);
             printText(toString(substitution(num1, num3)));
             break;
-        case 6:
-            num3 = std::stoi(numTwo);
-            printText(toString(integral(num1, num3)));
-            break; 
 
         }
     }
