@@ -1,14 +1,8 @@
 #pragma once
 #include "rational.h"
-
-template <typename COEF>
-long long intstr(std::string str, int i = 0)
-{
-	long long n = str.size(), sum = 0;
-	for (; i < n && str[i] >= '0' && str[i] <= '9'; i++) sum = 10LL * sum + static_cast<long long>(str[i] - '0');
-	return sum;
-}
-
+//класс полиномов
+//словарь коэффициентов (COEF) и вектор степеней (IND), они отсортированы по возрастанию
+//мы передаем ключ - степень x, перед которым стоит ненулевой коэффициент, и получаем сам коэффициент
 template <class IND, class COEF>
 class polinom
 {
@@ -18,6 +12,8 @@ private:
 
 public:
 	polinom<IND, COEF>() {}
+	// Если число (коэффициент n) не лежит в границах 0 (т.е. больше или меньше примерно 0), 
+	//то мы добавляем нулевую степень (в вектор), коэффициент при которой равен этому числу (свободный член)
 	polinom<IND, COEF>(COEF n) 
 	{
 		if (n >= 0.0001 || n <= -0.0001)
@@ -26,6 +22,8 @@ public:
 			coef[0] = n;
 		} 
 	}
+	// Если число (коэффициент n) не лежит в границах 0 (т.е. больше или меньше примерно 0),
+	//то мы добавляем степень при коэффициенте в вектор, а коэффициент при этой степени - число n
 	polinom<IND, COEF>(IND l, COEF n) 
 	{
 		if (n >= 0.0001 || n <= -0.0001)
@@ -127,12 +125,15 @@ public:
 	template <class IND, class COEF> friend std::ostream& operator<< (std::ostream&, const polinom<IND, COEF>&);
 };
 
+// оператор равенства (равны ли два полинома)
+// Если количество ненулевыфх коэффициентов не равно количеству второго, то возвращаем false
+// Иначе в цикле сравниваем коэффициенты по степеням и сами степени
+// В случае неравенства - false, если ни разу не было false, то возвращаем true
 
 template <class IND, class COEF> 
 bool operator ==(const polinom<IND, COEF>& l_val, const polinom<IND, COEF>& r_val)
 {
-	polinom<IND, COEF> lv = l_val,
-		rv = r_val;
+	polinom<IND, COEF> lv = l_val, rv = r_val;
 	int n = l_val.ind.size();
 	if (n != r_val.ind.size()) return false;
 	for (int i = 0; i < n; i++)
@@ -142,14 +143,22 @@ bool operator ==(const polinom<IND, COEF>& l_val, const polinom<IND, COEF>& r_va
 	}
 	return true;
 }
-/*Вычисление интеграла*/
+/*Вычисление определенного интеграла
+  В функцию передается сам полином, и границы интеграла: нижняя и верхняя соответственно
+  Вызывается функция, вычисляющая неопределенный интеграл (ее результат записывается в новый полином)
+  Результат считается по формуле Ньютона-Лейбница (с помощью функции вычисления значения интеграла substitution)
+*/
 template <class IND, class COEF>
 COEF integral(polinom<IND, COEF>& pol, COEF& l_val, COEF& r_val)
 {
 	polinom<IND, COEF> F = integral(pol, l_val);
 	return (substitution(F, r_val) - substitution(F, l_val));
 }
-/*Бинарное возведение в степень*/
+/*Бинарное возведение в степень
+ Заметим, что x^(2n) = (x^2^(n - 1))^2
+ Если вместо а и b подставлять степени двойки, то получится, что мы можем произвольно складывать степени двойки в показателе числа
+ представим искомый показатель в двоичном виде и найдем соответствующие степени двойки в показателе
+ */
 template <typename IND, typename COEF>
 COEF power1(COEF key, IND ind)
 {
@@ -157,10 +166,8 @@ COEF power1(COEF key, IND ind)
 	power2.push_back(key);
 	for (COEF i = 2; i < ind; i = i * i) power2.push_back(power2[power2.size() - 1] * power2[power2.size() - 1]);
 	power2.push_back(power2[power2.size() - 1] * power2[power2.size() - 1]);
-
 	//for (int i = 0; i < power2.size(); i++) std::cout << power2[i] << ' ';
 	//std::cout << std::endl;
-
 	int sum = 0;
 	COEF ans = 1;
 	for (int i = 1, n = power2.size(); i <= n && sum < ind; i++)
@@ -174,6 +181,9 @@ COEF power1(COEF key, IND ind)
 	return ans;
 }
 // подстановка значений в полином
+// передается полином и значение х, которое нужно подставить в полином
+// в цикле вычисляем значение полинома 
+// выводим число, которое является значением полинома при таком х
 template <typename IND, typename COEF>
 COEF substitution(polinom<IND, COEF>& val, COEF& x)
 {
@@ -182,6 +192,7 @@ COEF substitution(polinom<IND, COEF>& val, COEF& x)
 	return sum;
 }
 // Слияние двух отсортированных векторов, возвращающее отсортированный вектор за линейное время
+// Объединение двух множеств
 template <typename IND>
 std::vector<IND> merge(const std::vector<IND>& l_val, const std::vector<IND>& r_val)
 {
@@ -200,6 +211,8 @@ std::vector<IND> merge(const std::vector<IND>& l_val, const std::vector<IND>& r_
 }
 
 // унарный минус
+// в цикле изменяет знаки перед коэффициентами полинома
+//возвращает вектор степеней и массив новых коэффициентов
 template <class IND, class COEF>
 polinom<IND, COEF> operator -(const polinom<IND, COEF>& val)
 {
@@ -209,11 +222,14 @@ polinom<IND, COEF> operator -(const polinom<IND, COEF>& val)
 	return polinom<IND, COEF>(val.ind, new_coef);
 }
 // вычитание полиномов
+// Объединяем множества показателей
+// вычитаем соответствующие коэффициенты
+// Удаляем образовавшиеся нули
+//возвращаем новые вектор степеней и словарь коэф.
 template <typename IND, typename COEF>
 polinom<IND, COEF> operator -(const polinom<IND, COEF>& l_val, const polinom<IND, COEF>& r_val)
 {
-	polinom<IND, COEF> lv = l_val,
-		rv = r_val;
+	polinom<IND, COEF> lv = l_val, rv = r_val;
 	std::vector<IND> new_ind = merge(lv.ind, rv.ind);
 	std::map<IND, COEF> new_coef;
 	for (const IND& to : new_ind) new_coef[to] = lv.coef[to] - rv.coef[to];
@@ -222,12 +238,15 @@ polinom<IND, COEF> operator -(const polinom<IND, COEF>& l_val, const polinom<IND
 	new_ind.resize(l);
 	return polinom<IND, COEF>(new_ind, new_coef);
 }
-// сложение многочленов
+// сложение полиномов
+// объединяем множества показателей
+//Складываем соответствующие коэффициенты 
+//удаляем образующиеся нули
+//возвращаем новые вектор степеней и словарь коэф.
 template <typename IND, typename COEF>
 polinom<IND, COEF> operator +(const polinom<IND, COEF>& l_val, const polinom<IND, COEF>& r_val)
 {
-	polinom<IND, COEF> lv = l_val,
-		rv = r_val;
+	polinom<IND, COEF> lv = l_val, rv = r_val;
 	std::vector<IND> new_ind = merge(lv.ind, rv.ind);
 	std::map<IND, COEF> new_coef;
 	for (const IND& to : new_ind) new_coef[to] = lv.coef[to] + rv.coef[to];
@@ -258,7 +277,13 @@ std::ostream& operator<< (std::ostream& out, const polinom<IND, COEF>& val)
 	}
 	return out;
 }
-
+// оператор ввода
+// вводится строка из которой удаляются все пробелы, (), *, х
+// потом он добавляет числа перед х
+//добавляет х к свободному коэффициенту
+//добавляет степень ко всем x
+// считывает числло до х и степень до знака + , -
+// Если коэффициент ненулевой то он добавляет его 
 template<class IND, class COEF>
 std::istream& operator>> (std::istream& in, polinom<IND, COEF>& val)
 {
@@ -275,7 +300,11 @@ polinom<IND, COEF> operator *(const polinom<IND, COEF>& l_val, const polinom<IND
 		rv = r_val;
 	if (l_val == 0 || r_val == 0) return polinom<IND, COEF>();
 	IND comp = std::max(l_val.ind[l_val.ind.size() - 1], r_val.ind[r_val.ind.size() - 1]);
-	/* умножение полиномов степени большей чем 1000000. Стандартное умножение "в столбик"*/
+	/* умножение полиномов степени большей чем 1000000. Стандартное умножение "в столбик"
+	   создается новый вектор степеней и новый словарь коэффициентов
+	   смотрим на все степени и попарно перемножаем их
+	   сортируем вектор степеней
+	   возвращаем отсортированный вектор степение и новый словарь коэффициентов*/
 	if (1 || comp * sizeof(COEF) > static_cast<long long>(1 << 30))
 	{
 		std::vector<IND> new_ind;
@@ -345,7 +374,6 @@ polinom<IND, COEF> operator *(const polinom<IND, COEF>& l_val, const polinom<IND
 	}*/
 }
 // деление полиномов
-//реализовано через умножение
 template <typename IND, typename COEF>
 polinom<IND, COEF> operator /(const polinom<IND, COEF>& l_val, const polinom<IND, COEF>& r_val)
 {
@@ -375,6 +403,10 @@ polinom<IND, COEF> operator /(const polinom<IND, COEF>& l_val, const polinom<IND
 	return polinom<IND, COEF>(new_ind, new_coef);
 }
 // производная
+// в функцию передается полином
+// создается новый вектор степеней и новый словарь коэффициентов
+// в цикле опускаем степень каждого одночлена на 1 и домножаем коэффициет на эту степень
+// возвращаем новый вектор степеней и новый словарь коэффициентов
 template <typename IND, typename COEF>
 polinom<IND, COEF> derivative(polinom<IND, COEF>& val)
 {
@@ -388,7 +420,11 @@ polinom<IND, COEF> derivative(polinom<IND, COEF>& val)
 	return polinom<IND, COEF>(new_ind, new_coef);
 }
 
-// интеграл
+// неопределенный интеграл
+// в функцию передается константа интеграла и сам полином
+// если константа ненулевая, то в новый вектор степеней мы добавляем нулевую степень, а в словарь коэффициентов записываем константу при нулевой степени х (свободный член)
+// в цикле увеличиваем степень одночленов на 1, коэффициенты вычисляем по формуле val.coef[val.ind[i]] / (val.ind[i] + 1)
+// возвращаем новый вектор степеней и новый словарь коэффициентов
 template <typename IND, typename COEF>
 polinom<IND, COEF> integral(polinom<IND, COEF>& val, COEF& C)
 {
@@ -407,6 +443,11 @@ polinom<IND, COEF> integral(polinom<IND, COEF>& val, COEF& C)
 	return polinom<IND, COEF>(new_ind, new_coef);
 }
 // остаток от деления
+// в функцию передаются делимое и делитель (полиномы)
+// создаем полином help в который записываем целую часть от деления данных многочленов и полином для ответа, в который изначально записывается делимое
+// Далее целую часть от деления мы умножаем на делитель и вычитаем из делимого
+// возвращаем вектор, в котором остается остаток от деления
+
 template <typename IND, typename COEF>
 polinom<IND, COEF> operator %(const polinom<IND, COEF>& l_val, const polinom<IND, COEF>& r_val)
 {
