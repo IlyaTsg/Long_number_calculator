@@ -1,6 +1,13 @@
 #pragma once
 #include "ll.h"
 
+/** \class rational
+ *  \brief Класс очень длинных натуральных чисел
+ *	\details Реализует в себе все необходимо-достаточные возможности для работы с очень длинным рациональными числами, такие как сравнение, и простейщие арифметические операции, а так же вывод их в стандартные потоки\n
+ * 	Само рациональное число представлено в виде дроби: числитель/знаменатель
+ *  \authors Тимур и Мария
+ */
+
 //Турушев Тимур 0306
 template <class T>
 class rational
@@ -20,7 +27,14 @@ public:
 	T getDen() { return den; }
 	friend bool isnum(rational<T> val) { return (val.den == 1); }
 	friend ll::ll(rational<T>& val);
-	//Мария Шкода 0306
+	
+	/** \brief Сравнение 2 чисел
+	 * \details Сравнение рациональных чисел
+	 * \param secval const rational<T>& lv, const rational<T>& rv
+	 * \return bool true - если верно, false - если неверно
+	 * \authors Шкода Мария 0306
+	 */
+	
 	friend bool operator ==(const rational<T>& lv, const rational<T>& rv) { return (lv.num == rv.num && lv.den == rv.den); }
 	template <class type> friend bool operator ==(const rational<T>& lv, const type& rv) { return (lv == rational<T>(rv)); }
 	template <class type> friend bool operator ==(const type& lv, const rational<T>& rv) { return (rational<T>(lv) == rv); }
@@ -78,6 +92,7 @@ public:
 		return res;
 	}
 	//Турушев Тимур 0306
+	
 	friend std::ostream& operator<< (std::ostream& out, const rational<T>& val) {
 		out << val.num;
 		if (val.den != 1) out << "/" << val.den;
@@ -95,7 +110,11 @@ public:
 		return out;
 	}*/
 	//friend std::ostream& operator<< (std::ostream& out, const rational<ll>& val);
-
+	/** \brief Сокращение дроби
+	 * \details Деление числителя и знаменателя на их нод
+	 * \param secval rational<T>& to
+	 * \authors Турушев Тимур 0306
+	 */
 	//Reduction
 	friend void red(rational<T>& to) {
 		T frac_gcd = gcd(to.num, to.den);
@@ -107,6 +126,11 @@ public:
 		}
 	}
 	//Мария Шкода 0306
+	/** \brief Приведение к общему знамантелю
+	 * \details Операция реализована с помощью нок
+	 * \param secval rational<T>& lval, rational<T>& rval
+	 * \authors Шкода Мария 0306
+	 */
 			//Reduction to a common denominator
 	void static comden(rational<T>& lval, rational<T>& rval) {
 		T cden = lcm(lval.den, rval.den);
@@ -116,6 +140,12 @@ public:
 		lval.den = cden;
 		rval.den = cden;
 	}
+	/** \brief Вычитание
+	 * \details Используется приведение к общему знаменателю. После этой операции числитель правой операнды вычитается из левой
+	 * \param secval const rational<T>& lval, const rational<T>& rval
+	 * \return vln разность
+	 * \authors Шкода Мария 0306
+	 */
 	friend rational<T> operator -(const rational<T>& lval, const rational<T>& rval) {
 		rational<T> res;
 		rational<T> rv = rval;
@@ -128,6 +158,11 @@ public:
 	}
 };
 //Турушев Тимур 0306
+	
+/** \brief Специализации конструкторов
+ * \details Формат строки - "(sign)num/den"
+ * \authors Турушев Тимур 0306
+ */	
 ////Специализации конструкторов
 typedef rational<ll> rational_ll;
 ////Формат строки - "(sign)num/den"
