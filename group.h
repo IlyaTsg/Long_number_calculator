@@ -41,7 +41,7 @@ public:
 	friend bool canAction(char op1, std::stack<char> op);
 };
 
-// Igwe Chidi 0305
+// Илья Цыганков 0306
 int priority(char op)
 {
 	if(op == '(') return -1;
