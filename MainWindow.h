@@ -35,8 +35,6 @@ private:
     QPushButton* absButton;     // abs
 //  Для полиномов
     QPushButton* derButton;     // Производная
-    QPushButton* intButton;     // Интеграл
-    QPushButton* korButton;     // Корни многочлена
     QPushButton* znaButton;     // Значение в точке
 //  Кроме натуральных
     QPushButton* minuButton;    // -
@@ -81,7 +79,6 @@ public slots:
     void onResu();
 
     void onZna();
-    void onInt();
 
     void onGcd();
     void onLcm();
