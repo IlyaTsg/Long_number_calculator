@@ -24,8 +24,8 @@ public:
     vln(std::string to) : num{ ll(to) } {}
     vln(std::vector<long long> nuM) : num{ ll(false, nuM) } {}
     friend std::ostream& operator<< (std::ostream& out, const vln& val);
-
-    friend ll::ll(const vln& val);
+    
+    ll getNum() { return num; }
 
     //Новиков Владислав 0306
     friend bool operator ==(const vln& lval, const vln& rval) { return (lval.num == rval.num); }
@@ -83,7 +83,7 @@ public:
     friend std::istream& operator>> (std::istream& in, vln& val);
 };
 
-ll::ll(const vln& val) : sign(false), num(val.num.num) {}
+ll::ll(vln val) { (*this) = val.getNum(); }
 
 //Новиков Владислав 0306
 /** \brief Сравнение 2 чисел
@@ -164,7 +164,7 @@ vln vln::div(const vln& secval)
  * \authors Артём
  * \param out std::ostream& поток для вывода
  * \param secval const vln& выводимое число
- * \return std::ostream& поток с числом в нём
+ * \return std::ostream& поток с чис лом в нём
  */
 std::ostream& operator<< (std::ostream& out, const vln& val)
 {

@@ -127,7 +127,6 @@ public:
     template <class IND, class COEF> friend std::ostream& operator<< (std::ostream&, const polinom<IND, COEF>&);
 };
 
-
 template <class IND, class COEF>
 bool operator ==(const polinom<IND, COEF>& l_val, const polinom<IND, COEF>& r_val)
 {
@@ -142,6 +141,7 @@ bool operator ==(const polinom<IND, COEF>& l_val, const polinom<IND, COEF>& r_va
     }
     return true;
 }
+
 /*Вычисление интеграла*/
 template <class IND, class COEF>
 COEF integral(polinom<IND, COEF>& pol, COEF& l_val, COEF& r_val)
@@ -149,6 +149,7 @@ COEF integral(polinom<IND, COEF>& pol, COEF& l_val, COEF& r_val)
     polinom<IND, COEF> F = integral(pol, l_val);
     return (substitution(F, r_val) - substitution(F, l_val));
 }
+
 /*Бинарное возведение в степень*/
 template <typename IND, typename COEF>
 COEF power1(COEF key, IND ind)
@@ -173,6 +174,7 @@ COEF power1(COEF key, IND ind)
     }
     return ans;
 }
+
 // подстановка значений в полином
 template <typename IND, typename COEF>
 COEF substitution(polinom<IND, COEF>& val, COEF& x)
@@ -181,6 +183,7 @@ COEF substitution(polinom<IND, COEF>& val, COEF& x)
     for (const IND& to : val.ind) sum = sum + val.coef[to] * power1(x, to);
     return sum;
 }
+
 // Слияние двух отсортированных векторов, возвращающее отсортированный вектор за линейное время
 template <typename IND>
 std::vector<IND> merge(const std::vector<IND>& l_val, const std::vector<IND>& r_val)
@@ -208,6 +211,7 @@ polinom<IND, COEF> operator -(const polinom<IND, COEF>& val)
     for (const COEF& to : val.ind) new_coef[to] = -value.coef[to];
     return polinom<IND, COEF>(val.ind, new_coef);
 }
+
 // вычитание полиномов
 template <typename IND, typename COEF>
 polinom<IND, COEF> operator -(const polinom<IND, COEF>& l_val, const polinom<IND, COEF>& r_val)
@@ -222,6 +226,7 @@ polinom<IND, COEF> operator -(const polinom<IND, COEF>& l_val, const polinom<IND
     new_ind.resize(l);
     return polinom<IND, COEF>(new_ind, new_coef);
 }
+
 // сложение многочленов
 template <typename IND, typename COEF>
 polinom<IND, COEF> operator +(const polinom<IND, COEF>& l_val, const polinom<IND, COEF>& r_val)
@@ -236,6 +241,7 @@ polinom<IND, COEF> operator +(const polinom<IND, COEF>& l_val, const polinom<IND
     new_ind.resize(l);
     return polinom<IND, COEF>(new_ind, new_coef);
 }
+
 // оператор вывода
 template <typename IND, typename COEF>
 std::ostream& operator<< (std::ostream& out, const polinom<IND, COEF>& val)
@@ -295,54 +301,8 @@ polinom<IND, COEF> operator *(const polinom<IND, COEF>& l_val, const polinom<IND
         new_ind.resize(l);
         return polinom<IND, COEF>(new_ind, new_coef);
     }
-    /*else
-    {
-        /*
-        умножение полиномов степени выше 1000000
-        1) Находим минимальные и максимальные элементы у полиномов;
-        2) Изменяем размер векторов
-        3) заполняем векторы коэффициентов со смещением на минимальную степень.
-        4) выделяем 2^(n+1) мест под значения полиномов
-        5) применяем алгоритм БПФ
-        6) в res записываем вещественную часть от коэффициентов
-        7) Возвращаем вектор новых коэффициентов и степеней
-        *
-        int value = 0;
-        auto minorl = std::min_element(l_val.ind.begin(), l_val.ind.end());
-        auto minorr = std::min_element(r_val.ind.begin(), r_val.ind.end());
-        auto maxl = std::max_element(l_val.ind.begin(), l_val.ind.end());
-        auto maxr = std::max_element(r_val.ind.begin(), r_val.ind.end());
-        std::vector < std::complex<long double>> fr, fl, result;
-        fr.resize((*maxr - (*minorr) + 1), value);
-        fl.resize((*maxl - (*minorl) + 1), value);
-        for (const auto& l : l_val.ind) fl[l - *minorl] = l_val.coef[l];
-        for (const auto& r : r_val.ind) fr[r - *minorr] = r_val.coef[r];
-        size_t n = 1;
-        while (n < std::max(fr.size(), fl.size())) n <<= 1;
-        n <<= 1;
-        fr.resize(n, value); fl.resize(n);
-        fft(fr, false);
-        fft(fl, false);
-        for (size_t i = 0; i < n; i++) fr[i] *= fl[i];
-        fft(fr, true);
-        result.resize(n);
-        std::vector<long double> res;
-        res.resize(n);
-        for (size_t i = 0; i < n; i++) res[i] = double(fr[i].real());
-        std::vector<IND> newind;
-        std::map<IND, COEF> newcoef;
-        int vinos = *minorl + (*minorr);
-        for (size_t i = 0; i <= *maxl + *maxr; i++)
-        {
-            if (i < res.size() && res[i] != 0)
-            {
-                newind.push_back(i + vinos);
-                newcoef[i + vinos] = res[i];
-            }
-        }
-        return polinom<IND, COEF>(newind, newcoef);
-    }*/
 }
+
 // деление полиномов
 //реализовано через умножение
 template <typename IND, typename COEF>
@@ -405,6 +365,7 @@ polinom<IND, COEF> integral(polinom<IND, COEF>& val, COEF& C)
     }
     return polinom<IND, COEF>(new_ind, new_coef);
 }
+
 // остаток от деления
 template <typename IND, typename COEF>
 polinom<IND, COEF> operator %(const polinom<IND, COEF>& l_val, const polinom<IND, COEF>& r_val)
